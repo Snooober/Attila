@@ -53,7 +53,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        //shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.setColor(Color.DARK_GRAY);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         currentCoords = board.getCoords().clone();
@@ -77,7 +76,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+        camera.update();
+        shapeRenderer.setProjectionMatrix(camera.combined);
     }
 
     @Override
