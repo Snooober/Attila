@@ -15,6 +15,7 @@ public class Attila extends Game {
 
     @Override
     public void dispose() {
+        batch.dispose();
     }
 
     @Override
