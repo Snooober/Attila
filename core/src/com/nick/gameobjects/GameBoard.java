@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.nick.attilahelpers.AssetLoader;
 
 import java.util.ArrayList;
@@ -19,17 +20,50 @@ public class GameBoard {
     private int screenHeight;
     private float padding;
     private float[] initCoords;
+    private PlayPiece[] player1_pieces;
+    private PlayPiece[] player2_pieces;
+    private float pieceWidth;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
         this.numRows = numRows;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
-        padding = 20;
+        float factor = screenWidth / 60f;
+        padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
+
+        player1_pieces = new PlayPiece[3];
+        player2_pieces = new PlayPiece[3];
 
         genBoardSpaces();
         genBoardSpaceLength();
         setInitCoords();
+
+        pieceWidth = boardSpaceLength - (boardSpaceLength / 20);
+        player1_pieces[0] = new PlayPiece(PlayerNum.ONE, screenWidth / 2f - pieceWidth / 2 - pieceWidth - padding, padding, pieceWidth / 2f);
+        player1_pieces[1] = new PlayPiece(PlayerNum.ONE, screenWidth / 2f - pieceWidth / 2, padding, pieceWidth / 2f);
+        player1_pieces[2] = new PlayPiece(PlayerNum.ONE, screenWidth / 2f - pieceWidth / 2 + pieceWidth + padding, padding, pieceWidth / 2f);
+        player2_pieces[0] = new PlayPiece(PlayerNum.TWO, screenWidth / 2f - pieceWidth / 2 - pieceWidth - padding, screenHeight - padding - pieceWidth, pieceWidth / 2f);
+        player2_pieces[1] = new PlayPiece(PlayerNum.TWO, screenWidth / 2f - pieceWidth / 2, screenHeight - padding - pieceWidth, pieceWidth / 2f);
+        player2_pieces[2] = new PlayPiece(PlayerNum.TWO, screenWidth / 2f - pieceWidth / 2 + pieceWidth + padding, screenHeight - padding - pieceWidth, pieceWidth / 2f);
+    }
+
+    public boolean movePieces(final Vector2 touchPos) {
+        touchPos.x = touchPos.x - pieceWidth / 2;
+        touchPos.y = touchPos.y - pieceWidth / 2;
+        for (int i = 0; i < player1_pieces.length; i++) {
+            if (player1_pieces[i].getDrawCircle().contains(touchPos)) {
+                player1_pieces[i].movePiece(touchPos);
+                return true;
+            }
+        }
+        for (int i = 0; i < player2_pieces.length; i++) {
+            if (player2_pieces[i].getDrawCircle().contains(touchPos)) {
+                player2_pieces[i].movePiece(touchPos);
+                return true;
+            }
+        }
+        return false;
     }
 
     //make boardSpaceRows List
@@ -111,9 +145,22 @@ public class GameBoard {
 
     private void renderPlayerPieces(final float delta, final SpriteBatch batch) {
         batch.begin();
-        batch.draw(AssetLoader.redPiece, 0, 0);
+
+        for (int i = 0; i < player1_pieces.length; i++) {
+            if (player1_pieces[i].played) {
+                batch.draw(AssetLoader.redPiece, player1_pieces[i].getCircleX(), player1_pieces[i].getCircleY(), player1_pieces[i].getCircleRad() * 2, player1_pieces[i].getCircleRad() * 2);
+            } else {
+
+            }
+        }
+        for (int i = 0; i < player2_pieces.length; i++) {
+            if (player2_pieces[i].played) {
+                batch.draw(AssetLoader.blackPiece, player2_pieces[i].getCircleX(), player2_pieces[i].getCircleY(), player2_pieces[i].getCircleRad() * 2, player2_pieces[i].getCircleRad() * 2);
+            } else {
+
+            }
+        }
+
         batch.end();
-
-
     }
 }
