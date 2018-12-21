@@ -53,13 +53,13 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
         Vector3 touchPos = new Vector3(screenX, screenY, 0);
         camera.unproject(touchPos);
         Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
 
         return board.movePieces(touchPos2);
-        //return super.touchDown(screenX, screenY, pointer, button);
+        //return super.touchDragged(screenX, screenY, pointer);
     }
 
     @Override

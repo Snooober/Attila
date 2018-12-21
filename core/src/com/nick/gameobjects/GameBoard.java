@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilahelpers.AssetLoader;
 
@@ -36,8 +37,6 @@ public class GameBoard {
         player2_pieces = new PlayPiece[3];
 
         genBoardSpaces();
-        genBoardSpaceLength();
-        setInitCoords();
 
         pieceWidth = boardSpaceLength - (boardSpaceLength / 20);
         player1_pieces[0] = new PlayPiece(PlayerNum.ONE, screenWidth / 2f - pieceWidth / 2 - pieceWidth - padding, padding, pieceWidth / 2f);
@@ -66,20 +65,33 @@ public class GameBoard {
         return false;
     }
 
-    //make boardSpaceRows List
+    //make board spaces
     private void genBoardSpaces() {
+        genBoardSpaceLength();
+        setInitCoords();
+
         List<BoardSpace> boardSpaceRow = new ArrayList<BoardSpace>();
-        for (int i = 0; i < numCols; i++) {
-            BoardSpace boardSpace = new BoardSpace(true);
-            boardSpaceRow.add(boardSpace);
-        }
         boardSpaceRows = new ArrayList<List<BoardSpace>>();
+        float[] currentCoords = new float[2];
+        currentCoords[0] = initCoords[0];
+        currentCoords[1] = initCoords[1];
         for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
+                currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
+                BoardSpace boardSpace = new BoardSpace(true, rect);
+                boardSpaceRow.add(boardSpace);
+            }
             boardSpaceRows.add(boardSpaceRow);
+
+            //reset x-coord
+            //increment y-coord
+            currentCoords[0] = initCoords[0];
+            currentCoords[1] = currentCoords[1] + padding + boardSpaceLength;
         }
     }
 
-    //determine width, height, boardSpaceLength
+    //determine width, height --> boardSpaceLength
     private void genBoardSpaceLength() {
         float extraHeightMargin = screenHeight / 5f;
         float extraWidthMargin = screenWidth / 10f;
@@ -89,6 +101,7 @@ public class GameBoard {
         boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
     }
 
+    //find initial coordinate for first BoardSpace
     private void setInitCoords() {
         initCoords = new float[2];
 
@@ -120,24 +133,16 @@ public class GameBoard {
         shapeRenderer.setColor(Color.GRAY);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        float[] currentCoords = new float[2];
-        currentCoords[0] = initCoords[0];
-        currentCoords[1] = initCoords[1];
-
         Iterator<List<BoardSpace>> rowsIt = boardSpaceRows.iterator();
         while (rowsIt.hasNext()) {
             List<BoardSpace> rows = rowsIt.next();
             Iterator<BoardSpace> rowIt = rows.iterator();
             while (rowIt.hasNext()) {
                 BoardSpace boardSpace = rowIt.next();
+                Rectangle rect = boardSpace.getRectangle();
 
-                shapeRenderer.rect(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
-                currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
+                shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
             }
-            //reset x-coord to the left
-            //increment y-coord
-            currentCoords[0] = initCoords[0];
-            currentCoords[1] = currentCoords[1] + padding + boardSpaceLength;
         }
 
         shapeRenderer.end();
