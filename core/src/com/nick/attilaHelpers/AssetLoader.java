@@ -14,8 +14,6 @@ public class AssetLoader {
         playerPieces.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         redPiece = new TextureRegion(playerPieces, 0, 32, 32, 32);
         blackPiece = new TextureRegion(playerPieces, 32, 32, 32, 32);
-
-        //test comment
     }
 
     public static void dispose() {
