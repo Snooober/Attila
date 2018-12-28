@@ -53,7 +53,7 @@ public class GameBoard {
     public boolean movePieces(final Vector2 touchPos) {
         if (gameState.getCurrentTurn().equals(PlayerNum.ONE)) {
             for (int i = 0; i < player1_pieces.length; i++) {
-                if (player1_pieces[i].getCircle().contains(touchPos)) {
+                if (player1_pieces[i].getCircle().contains(touchPos) && !player1_pieces[i].isPlayed()) {
                     player1_pieces[i].movePiece(touchPos);
                     touchedPiece = player1_pieces[i];
                     return true;
@@ -61,7 +61,7 @@ public class GameBoard {
             }
         } else if (gameState.getCurrentTurn().equals(PlayerNum.TWO)) {
             for (int i = 0; i < player2_pieces.length; i++) {
-                if (player2_pieces[i].getCircle().contains(touchPos)) {
+                if (player2_pieces[i].getCircle().contains(touchPos) && !player2_pieces[i].isPlayed()) {
                     player2_pieces[i].movePiece(touchPos);
                     touchedPiece = player2_pieces[i];
                     return true;
@@ -160,31 +160,27 @@ public class GameBoard {
         batch.begin();
 
         for (int i = 0; i < player1_pieces.length; i++) {
-            if (player1_pieces[i].played) {
-                player1_pieces[i].drawPiece(batch);
+            player1_pieces[i].drawPiece(batch);
 
-                //if touching a BoardSpace, then associate piece with that space
-                Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
-                while (boardSpaceIt.hasNext()) {
-                    BoardSpace boardSpace = boardSpaceIt.next();
-                    if (boardSpace.getRectangle().contains(player1_pieces[i].getCircleCenter())) {
-                        player1_pieces[i].setNewSpace(boardSpace);
-                    }
+            //if touching a BoardSpace, then associate piece with that space
+            Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
+            while (boardSpaceIt.hasNext()) {
+                BoardSpace boardSpace = boardSpaceIt.next();
+                if (boardSpace.getRectangle().contains(player1_pieces[i].getCircleCenter())) {
+                    player1_pieces[i].setNewSpace(boardSpace);
                 }
             }
         }
 
         for (int i = 0; i < player2_pieces.length; i++) {
-            if (player2_pieces[i].played) {
-                player2_pieces[i].drawPiece(batch);
+            player2_pieces[i].drawPiece(batch);
 
-                //if touching a BoardSpace, then associate piece with that space
-                Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
-                while (boardSpaceIt.hasNext()) {
-                    BoardSpace boardSpace = boardSpaceIt.next();
-                    if (boardSpace.getRectangle().contains(player2_pieces[i].getCircleCenter())) {
-                        player2_pieces[i].setNewSpace(boardSpace);
-                    }
+            //if touching a BoardSpace, then associate piece with that space
+            Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
+            while (boardSpaceIt.hasNext()) {
+                BoardSpace boardSpace = boardSpaceIt.next();
+                if (boardSpace.getRectangle().contains(player2_pieces[i].getCircleCenter())) {
+                    player2_pieces[i].setNewSpace(boardSpace);
                 }
             }
         }

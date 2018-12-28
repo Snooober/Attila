@@ -7,7 +7,7 @@ import com.nick.attilaHelpers.AssetLoader;
 
 public class PlayPiece {
 
-    boolean played;
+    private boolean played;
     private PlayerNum playerNum;
     private Circle drawCircle;
     private BoardSpace currentSpace;
@@ -15,7 +15,7 @@ public class PlayPiece {
 
     PlayPiece(final PlayerNum playerNum, final float x, final float y, final float radius) {
         this.playerNum = playerNum;
-        this.played = true;
+        this.played = false;
         this.currentSpace = null;
         this.newSpace = null;
         setDrawCircle(x, y, radius);
@@ -23,6 +23,10 @@ public class PlayPiece {
 
     void setNewSpace(BoardSpace newSpace) {
         this.newSpace = newSpace;
+    }
+
+    public boolean isPlayed() {
+        return played;
     }
 
     void drawPiece(SpriteBatch batch) {
@@ -50,6 +54,7 @@ public class PlayPiece {
         if (currentSpace != newSpace) {
             movePiece(newSpace.getCenter());
             currentSpace = newSpace;
+            played = true;
             return playerNum;
         }
         return null;
