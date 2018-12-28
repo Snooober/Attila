@@ -46,9 +46,8 @@ public class GameBoard {
         player2_pieces[2] = new PlayPiece(PlayerNum.TWO, screenWidth / 2f + boardSpaceLength, screenHeight - boardSpaceLength, boardSpaceLength * 0.4f);
     }
 
+    //gets called during touchDragged() event
     public boolean movePieces(final Vector2 touchPos) {
-        //touchPos.x = touchPos.x - pieceWidth / 2;
-        //touchPos.y = touchPos.y - pieceWidth / 2;
         for (int i = 0; i < player1_pieces.length; i++) {
             if (player1_pieces[i].getCircle().contains(touchPos)) {
                 player1_pieces[i].movePiece(touchPos);
@@ -64,18 +63,19 @@ public class GameBoard {
         return false;
     }
 
+    //gets called during touchUp() event. Snaps PlayPiece's to BoardSpace
     public boolean setPieces() {
         for (int i = 0; i < player1_pieces.length; i++) {
-            player1_pieces[i].moveToSpace();
+            player1_pieces[i].moveToSetSpace();
         }
         for (int i = 0; i < player2_pieces.length; i++) {
-            player2_pieces[i].moveToSpace();
+            player2_pieces[i].moveToSetSpace();
         }
 
         return true;
     }
 
-    //make board spaces
+    //make boardSpaces
     private void genBoardSpaces() {
         genBoardSpaceLength();
         setInitCoords();
@@ -99,7 +99,7 @@ public class GameBoard {
         }
     }
 
-    //determine width, height --> boardSpaceLength
+    //determine width, height of BoardSpace --> boardSpaceLength
     private void genBoardSpaceLength() {
         float extraHeightMargin = screenHeight / 5f;
         float extraWidthMargin = screenWidth / 10f;
@@ -152,11 +152,6 @@ public class GameBoard {
     }
 
     private void renderPlayerPieces(final float delta, final SpriteBatch batch, ShapeRenderer shapeRenderer) {
-        //TODO remove
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(player1_pieces[0].getCircleX(), player1_pieces[0].getCircleY(), player1_pieces[0].getCircleRad());
-        shapeRenderer.end();
-
         batch.begin();
 
         for (int i = 0; i < player1_pieces.length; i++) {
@@ -177,6 +172,15 @@ public class GameBoard {
         for (int i = 0; i < player2_pieces.length; i++) {
             if (player2_pieces[i].played) {
                 player2_pieces[i].drawPiece(batch);
+
+                //if touching a BoardSpace, then associate piece with that space
+                Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
+                while (boardSpaceIt.hasNext()) {
+                    BoardSpace boardSpace = boardSpaceIt.next();
+                    if (boardSpace.getRectangle().contains(player2_pieces[i].getCircleCenter())) {
+                        player2_pieces[i].setCurrentSpace(boardSpace);
+                    }
+                }
             }
         }
 

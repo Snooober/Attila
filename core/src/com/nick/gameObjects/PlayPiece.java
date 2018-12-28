@@ -59,7 +59,7 @@ public class PlayPiece {
         drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
-    public void moveToSpace() {
+    public void moveToSetSpace() {
         if (currentSpace == null) {
 
         } else {

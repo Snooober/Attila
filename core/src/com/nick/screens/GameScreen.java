@@ -6,24 +6,22 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.nick.attila.Attila;
 import com.nick.attilaHelpers.AssetLoader;
+import com.nick.attilaHelpers.InputHandler;
 import com.nick.gameObjects.GameBoard;
 
 public class GameScreen extends InputAdapter implements Screen {
+    public OrthographicCamera camera;
+    public GameBoard board;
     private Attila game;
-    private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
     private int screenWidth;
     private int screenHeight;
-    private GameBoard board;
-
 
     public GameScreen(final Attila game) {
+        Gdx.input.setInputProcessor(new InputHandler(this));
         this.game = game;
-        Gdx.input.setInputProcessor(this);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         shapeRenderer = new ShapeRenderer();
@@ -33,7 +31,6 @@ public class GameScreen extends InputAdapter implements Screen {
         screenHeight = Gdx.graphics.getHeight();
 
         board = new GameBoard(5, 4);
-
     }
 
     @Override
@@ -52,21 +49,7 @@ public class GameScreen extends InputAdapter implements Screen {
         board.render(delta, game.batch, shapeRenderer);
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Vector3 touchPos = new Vector3(screenX, screenY, 0);
-        camera.unproject(touchPos);
-        Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
 
-        return board.movePieces(touchPos2);
-        //return super.touchDragged(screenX, screenY, pointer);
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return board.setPieces();
-        //return super.touchUp(screenX, screenY, pointer, button);
-    }
 
     @Override
     public void resize(int width, int height) {
