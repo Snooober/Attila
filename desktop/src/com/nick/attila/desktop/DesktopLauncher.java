@@ -3,7 +3,7 @@ package com.nick.attila.desktop;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.nick.attila.Attila;
+import com.nick.Attila;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {

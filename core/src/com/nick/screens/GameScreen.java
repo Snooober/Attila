@@ -1,17 +1,16 @@
 package com.nick.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.nick.attila.Attila;
+import com.nick.Attila;
 import com.nick.attilaHelpers.AssetLoader;
 import com.nick.attilaHelpers.InputHandler;
 import com.nick.gameObjects.GameBoard;
 
-public class GameScreen extends InputAdapter implements Screen {
+public class GameScreen implements Screen {
     public OrthographicCamera camera;
     public GameBoard board;
     private Attila game;

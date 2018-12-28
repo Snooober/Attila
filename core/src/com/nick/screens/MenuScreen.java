@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.nick.attila.Attila;
+import com.nick.Attila;
 
 public class MenuScreen implements Screen, InputProcessor {
     OrthographicCamera camera;

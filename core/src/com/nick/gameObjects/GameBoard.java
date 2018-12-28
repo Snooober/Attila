@@ -22,6 +22,8 @@ public class GameBoard {
     private float[] initCoords;
     private PlayPiece[] player1_pieces;
     private PlayPiece[] player2_pieces;
+    public PlayPiece touchedPiece;
+    private GameState gameState;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -30,6 +32,7 @@ public class GameBoard {
         screenHeight = Gdx.graphics.getHeight();
         float factor = screenWidth / 60f;
         padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
+        gameState = new GameState();
 
         genBoardSpaces();
         initPieces();
@@ -48,31 +51,33 @@ public class GameBoard {
 
     //gets called during touchDragged() event
     public boolean movePieces(final Vector2 touchPos) {
-        for (int i = 0; i < player1_pieces.length; i++) {
-            if (player1_pieces[i].getCircle().contains(touchPos)) {
-                player1_pieces[i].movePiece(touchPos);
-                return true;
+        if (gameState.getCurrentTurn().equals(PlayerNum.ONE)) {
+            for (int i = 0; i < player1_pieces.length; i++) {
+                if (player1_pieces[i].getCircle().contains(touchPos)) {
+                    player1_pieces[i].movePiece(touchPos);
+                    touchedPiece = player1_pieces[i];
+                    return true;
+                }
+            }
+        } else if (gameState.getCurrentTurn().equals(PlayerNum.TWO)) {
+            for (int i = 0; i < player2_pieces.length; i++) {
+                if (player2_pieces[i].getCircle().contains(touchPos)) {
+                    player2_pieces[i].movePiece(touchPos);
+                    touchedPiece = player2_pieces[i];
+                    return true;
+                }
             }
         }
-        for (int i = 0; i < player2_pieces.length; i++) {
-            if (player2_pieces[i].getCircle().contains(touchPos)) {
-                player2_pieces[i].movePiece(touchPos);
-                return true;
-            }
-        }
+
         return false;
     }
 
     //gets called during touchUp() event. Snaps PlayPiece's to BoardSpace
-    public boolean setPieces() {
-        for (int i = 0; i < player1_pieces.length; i++) {
-            player1_pieces[i].moveToSetSpace();
+    public void setPiece(PlayPiece playPiece) {
+        PlayerNum playerNum = playPiece.moveToNewSpace();
+        if (playerNum != null) {
+            gameState.nextTurn();
         }
-        for (int i = 0; i < player2_pieces.length; i++) {
-            player2_pieces[i].moveToSetSpace();
-        }
-
-        return true;
     }
 
     //make boardSpaces
@@ -163,7 +168,7 @@ public class GameBoard {
                 while (boardSpaceIt.hasNext()) {
                     BoardSpace boardSpace = boardSpaceIt.next();
                     if (boardSpace.getRectangle().contains(player1_pieces[i].getCircleCenter())) {
-                        player1_pieces[i].setCurrentSpace(boardSpace);
+                        player1_pieces[i].setNewSpace(boardSpace);
                     }
                 }
             }
@@ -178,7 +183,7 @@ public class GameBoard {
                 while (boardSpaceIt.hasNext()) {
                     BoardSpace boardSpace = boardSpaceIt.next();
                     if (boardSpace.getRectangle().contains(player2_pieces[i].getCircleCenter())) {
-                        player2_pieces[i].setCurrentSpace(boardSpace);
+                        player2_pieces[i].setNewSpace(boardSpace);
                     }
                 }
             }

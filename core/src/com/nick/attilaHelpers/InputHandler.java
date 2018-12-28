@@ -23,7 +23,16 @@ public class InputHandler extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return screen.board.setPieces();
+        Vector3 touchPos = new Vector3(screenX, screenY, 0);
+        screen.camera.unproject(touchPos);
+        Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
+
+        if (screen.board.touchedPiece != null && screen.board.touchedPiece.getCircle().contains(touchPos2)) {
+            screen.board.setPiece(screen.board.touchedPiece);
+            return true;
+        }
+
+        return false;
     }
 
 }

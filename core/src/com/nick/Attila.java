@@ -1,4 +1,4 @@
-package com.nick.attila;
+package com.nick;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

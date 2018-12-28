@@ -7,27 +7,25 @@ import com.nick.attilaHelpers.AssetLoader;
 
 public class PlayPiece {
 
-    public boolean played;
+    boolean played;
     private PlayerNum playerNum;
     private Circle drawCircle;
     private BoardSpace currentSpace;
+    private BoardSpace newSpace;
 
-    public PlayPiece(final PlayerNum playerNum, final float x, final float y, final float radius) {
+    PlayPiece(final PlayerNum playerNum, final float x, final float y, final float radius) {
         this.playerNum = playerNum;
         this.played = true;
         this.currentSpace = null;
+        this.newSpace = null;
         setDrawCircle(x, y, radius);
     }
 
-    public BoardSpace getCurrentSpace() {
-        return currentSpace;
+    void setNewSpace(BoardSpace newSpace) {
+        this.newSpace = newSpace;
     }
 
-    public void setCurrentSpace(BoardSpace currentSpace) {
-        this.currentSpace = currentSpace;
-    }
-
-    public void drawPiece(SpriteBatch batch) {
+    void drawPiece(SpriteBatch batch) {
         if (this.playerNum.equals(PlayerNum.ONE)) {
             batch.draw(AssetLoader.redPiece, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
         } else if (this.playerNum.equals(PlayerNum.TWO)) {
@@ -35,39 +33,29 @@ public class PlayPiece {
         }
     }
 
-    public void setDrawCircle(final float x, final float y, final float radius) {
+    private void setDrawCircle(final float x, final float y, final float radius) {
         this.drawCircle = new Circle(x, y, radius);
-    }
-
-    public float getCircleX() {
-        return drawCircle.x;
-    }
-
-    public float getCircleY() {
-        return drawCircle.y;
-    }
-
-    public float getCircleRad() {
-        return drawCircle.radius;
     }
 
     public Circle getCircle() {
         return drawCircle;
     }
 
-    public void movePiece(final Vector2 touchPos) {
+    void movePiece(final Vector2 touchPos) {
         drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
-    public void moveToSetSpace() {
-        if (currentSpace == null) {
-
-        } else {
-            movePiece(getCurrentSpace().getCenter());
+    //moves piece to selected BoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
+    PlayerNum moveToNewSpace() {
+        if (currentSpace != newSpace) {
+            movePiece(newSpace.getCenter());
+            currentSpace = newSpace;
+            return playerNum;
         }
+        return null;
     }
 
-    public Vector2 getCircleCenter() {
+    Vector2 getCircleCenter() {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 }
