@@ -1,4 +1,4 @@
-package com.nick.gameobjects;
+package com.nick.gameObjects;
 
 public enum PlayerNum {
     ONE,

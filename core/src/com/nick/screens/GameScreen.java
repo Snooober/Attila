@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.nick.attila.Attila;
-import com.nick.attilahelpers.AssetLoader;
-import com.nick.gameobjects.GameBoard;
+import com.nick.attilaHelpers.AssetLoader;
+import com.nick.gameObjects.GameBoard;
 
 public class GameScreen extends InputAdapter implements Screen {
     private Attila game;
@@ -60,6 +60,12 @@ public class GameScreen extends InputAdapter implements Screen {
 
         return board.movePieces(touchPos2);
         //return super.touchDragged(screenX, screenY, pointer);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return board.setPieces();
+        //return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
