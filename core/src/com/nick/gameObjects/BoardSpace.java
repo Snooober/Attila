@@ -7,9 +7,13 @@ public class BoardSpace {
     private boolean realSpace;
     private PlayedSpace played;
     private Rectangle rectangle;
+    private int boardCoordX;
+    private int boardCoordY;
 
-    public BoardSpace(final boolean realSpace, final Rectangle rectangle) {
+    public BoardSpace(final boolean realSpace, final int boardCoordX, final int boardCoordY, final Rectangle rectangle) {
         this.realSpace = realSpace;
+        this.boardCoordX = boardCoordX;
+        this.boardCoordY = boardCoordY;
         this.played = PlayedSpace.EMPTY;
         this.rectangle = rectangle;
     }

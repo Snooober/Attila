@@ -93,7 +93,7 @@ public class GameBoard {
             for (int j = 0; j < numCols; j++) {
                 Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
                 currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
-                BoardSpace boardSpace = new BoardSpace(true, rect);
+                BoardSpace boardSpace = new BoardSpace(true, numCols, numRows, rect);
                 boardSpaces.add(boardSpace);
             }
 
