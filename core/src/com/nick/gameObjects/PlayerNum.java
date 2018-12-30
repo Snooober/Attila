@@ -2,5 +2,6 @@ package com.nick.gameObjects;
 
 public enum PlayerNum {
     ONE,
-    TWO
+    TWO,
+    NONE
 }

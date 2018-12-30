@@ -2,6 +2,7 @@ package com.nick.gameObjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilaHelpers.AssetLoader;
 
@@ -13,12 +14,13 @@ public class PlayPiece {
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
 
-    PlayPiece(final PlayerNum playerNum, final float x, final float y, final float radius) {
+    PlayPiece(final PlayerNum playerNum, final BoardSpace startSpace) {
         this.playerNum = playerNum;
         this.played = false;
-        this.currentSpace = null;
-        this.newSpace = null;
-        setDrawCircle(x, y, radius);
+        this.currentSpace = startSpace;
+        this.newSpace = startSpace;
+        Rectangle rect = startSpace.getRectangle();
+        setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
     }
 
     void setNewSpace(BoardSpace newSpace) {
@@ -49,13 +51,15 @@ public class PlayPiece {
         drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
-    //moves piece to selected BoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
+    //moves piece to selected GameBoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
     PlayerNum moveToNewSpace() {
         if (currentSpace != newSpace) {
             movePiece(newSpace.getCenter());
             currentSpace = newSpace;
             played = true;
             return playerNum;
+        } else {
+            movePiece(currentSpace.getCenter());
         }
         return null;
     }
