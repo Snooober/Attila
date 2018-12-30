@@ -14,6 +14,11 @@ public class PlayPiece {
     private Circle drawCircle;
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
+
+    public boolean isTouchUp() {
+        return touchUp;
+    }
+
     private boolean touchUp;
     private TextureRegion pieceTexture;
 
@@ -37,7 +42,12 @@ public class PlayPiece {
     }
 
     void drawPiece(final float delta, SpriteBatch batch) {
-        float speed = 200 * delta;
+        moveToSpace(delta);
+        batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
+    }
+
+    private void moveToSpace(final float delta) {
+        float speed = 3500 * delta;
         if (touchUp) {
             float distToX = newSpace.getCenter().x - drawCircle.x;
             float distToY = newSpace.getCenter().y - drawCircle.y;
@@ -50,7 +60,7 @@ public class PlayPiece {
             float travelY = distToY * speed;
 
             float distTravel = (float) Math.sqrt(travelX * travelX + travelY * travelY);
-            if (distTravel > distance) {
+            if (distTravel > distance || distance == 0) {
                 drawCircle.x = newSpace.getCenter().x;
                 drawCircle.y = newSpace.getCenter().y;
                 touchUp = false;
@@ -59,8 +69,6 @@ public class PlayPiece {
                 drawCircle.y = drawCircle.y + travelY;
             }
         }
-
-        batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
     }
 
     private void setDrawCircle(final float x, final float y, final float radius) {
@@ -77,11 +85,13 @@ public class PlayPiece {
 
     //moves piece to selected GameBoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
     PlayerNum onTouchUp() {
-        touchUp = true;
-        if (currentSpace != newSpace) {
-            currentSpace = newSpace;
-            played = true;
-            return playerNum;
+        if (!touchUp) {
+            touchUp = true;
+            if (currentSpace != newSpace) {
+                currentSpace = newSpace;
+                played = true;
+                return playerNum;
+            }
         }
         return null;
     }

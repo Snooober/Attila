@@ -130,7 +130,9 @@ public class GameBoard {
         //find PlayerPiece() being dragged
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
             if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
-                //TODO don't let a piece get dragged if it currently moving to newSpace
+                if (playerPieces[playerNumIndex][i].isTouchUp()) {
+                    return true;
+                }
                 playerPieces[playerNumIndex][i].dragPiece(touchPos);
                 touchedPiece = playerPieces[playerNumIndex][i];
 

@@ -21,6 +21,8 @@ public class GameState {
             currentTurn = PlayerNum.ONE;
         }
 
+        //TODO initiate next phase here
+
         return currentTurn;
     }
 
