@@ -31,7 +31,7 @@ public class GameBoard {
         screenHeight = Gdx.graphics.getHeight();
         float factor = screenWidth / 60f;
         padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
-        gameState = new GameState();
+        gameState = new GameState(this);
 
         initBoardSpaces();
     }
@@ -120,13 +120,18 @@ public class GameBoard {
 
     //gets called during touchDragged() event
     public boolean movePieces(final Vector2 touchPos) {
-        //find who's turn it is
-        int playerNumIndex;
-        if (gameState.getCurrentTurn().equals(PlayerNum.ONE)) {
-            playerNumIndex = 0;
-        } else {
-            playerNumIndex = 1;
+        if (gameState.getGamePhase().equals(GamePhase.PLACE)) {
+            return movePiecesPlacePhase(touchPos);
+        } else if (gameState.getGamePhase().equals(GamePhase.PLAY)) {
+            return movePiecesPlayPhase(touchPos);
         }
+
+    }
+
+    private boolean movePiecesPlacePhase(final Vector2 touchPos) {
+        //find who's turn it is
+        int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
+
         //find PlayerPiece() being dragged
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
             if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
@@ -159,12 +164,38 @@ public class GameBoard {
         return false;
     }
 
+    private boolean movePiecesPlayPhase(final Vector2 touchPos) {
+        //find who's turn it is
+        int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
+
+        //find PlayerPiece() being dragged
+        for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
+            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos)) {
+                //TODO here
+            }
+        }
+
+
+    }
+
     //gets called during touchUp() event. Snaps PlayPiece's to GameBoardSpace
     public void setPiece(PlayPiece playPiece) {
         PlayerNum playerNum = playPiece.onTouchUp();
         if (playerNum != null) {
             gameState.nextTurn();
         }
+    }
+
+    public boolean allPlayed() {
+        for (int player = 0; player <= 1; player++) {
+            for (int i = 0; i < playerPieces[player].length; i++) {
+                if (!playerPieces[player][i].isPlayed()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void render(final float delta, final SpriteBatch batch, final ShapeRenderer shapeRenderer) {

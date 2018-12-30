@@ -41,6 +41,10 @@ public class PlayPiece {
         return played;
     }
 
+    public void setPlayed(boolean played) {
+        this.played = played;
+    }
+
     void drawPiece(final float delta, SpriteBatch batch) {
         moveToSpace(delta);
         batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
