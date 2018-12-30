@@ -51,15 +51,13 @@ public class PlayPiece {
 
             float distTravel = (float) Math.sqrt(travelX * travelX + travelY * travelY);
             if (distTravel > distance) {
-                drawCircle.x = distToX;
-                drawCircle.y = distToY;
+                drawCircle.x = newSpace.getCenter().x;
+                drawCircle.y = newSpace.getCenter().y;
+                touchUp = false;
             } else {
                 drawCircle.x = drawCircle.x + travelX;
                 drawCircle.y = drawCircle.y + travelY;
             }
-        }
-        if (getCircleCenter().equals(newSpace.getCenter())) {
-            touchUp = false;
         }
 
         batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
@@ -74,9 +72,7 @@ public class PlayPiece {
     }
 
     void dragPiece(final Vector2 touchPos) {
-        if (!touchUp) {
-            drawCircle.setPosition(touchPos.x, touchPos.y);
-        }
+        drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
     //moves piece to selected GameBoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
