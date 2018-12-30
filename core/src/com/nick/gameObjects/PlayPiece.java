@@ -24,6 +24,9 @@ public class PlayPiece {
     }
 
     void setNewSpace(BoardSpace newSpace) {
+        if (newSpace instanceof StartSpace) {
+            return;
+        }
         this.newSpace = newSpace;
     }
 

@@ -125,6 +125,16 @@ public class GameBoard {
                 if (playerPieces[0][i].getCircle().contains(touchPos) && !playerPieces[0][i].isPlayed()) {
                     playerPieces[0][i].movePiece(touchPos);
                     touchedPiece = playerPieces[0][i];
+
+                    //if touching a BoardSpace, then set currentSpace.
+                    Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
+                    while (boardSpaceIterator.hasNext()) {
+                        BoardSpace boardSpace = boardSpaceIterator.next();
+                        if (boardSpace.getRectangle().contains(playerPieces[0][i].getCircleCenter())) {
+                            playerPieces[0][i].setNewSpace(boardSpace);
+                        }
+                    }
+
                     return true;
                 }
             }
@@ -133,6 +143,16 @@ public class GameBoard {
                 if (playerPieces[1][i].getCircle().contains(touchPos) && !playerPieces[1][i].isPlayed()) {
                     playerPieces[1][i].movePiece(touchPos);
                     touchedPiece = playerPieces[1][i];
+
+                    //if touching a BoardSpace, then set currentSpace.
+                    Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
+                    while (boardSpaceIterator.hasNext()) {
+                        BoardSpace boardSpace = boardSpaceIterator.next();
+                        if (boardSpace.getRectangle().contains(playerPieces[1][i].getCircleCenter())) {
+                            playerPieces[1][i].setNewSpace(boardSpace);
+                        }
+                    }
+
                     return true;
                 }
             }
@@ -176,15 +196,6 @@ public class GameBoard {
         for (int player = 0; player <= 1; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 playerPieces[player][i].drawPiece(batch);
-
-                //if touching a BoardSpace, then set currentSpace.
-                Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
-                while (boardSpaceIterator.hasNext()) {
-                    BoardSpace boardSpace = boardSpaceIterator.next();
-                    if (boardSpace.getRectangle().contains(playerPieces[player][i].getCircleCenter())) {
-                        playerPieces[player][i].setNewSpace(boardSpace);
-                    }
-                }
             }
         }
 
