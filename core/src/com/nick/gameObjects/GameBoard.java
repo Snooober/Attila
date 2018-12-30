@@ -15,7 +15,6 @@ public class GameBoard {
     private int numCols;
     private int numRows;
     private float boardSpaceLength;
-    private BoardSpace[][] startSpaces;
     private List<BoardSpace> boardSpaces;
     private int screenWidth;
     private int screenHeight;
@@ -42,13 +41,14 @@ public class GameBoard {
         setInitCoords();
         genBoardSpaces();
 
-        startSpaces = new BoardSpace[2][3];
-        startSpaces[0][0] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2 - boardSpaceLength, boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
-        startSpaces[0][1] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2, boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
-        startSpaces[0][2] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2 + boardSpaceLength, boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
-        startSpaces[1][0] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2 - boardSpaceLength, screenHeight - boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
-        startSpaces[1][1] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2, screenHeight - boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
-        startSpaces[1][2] = new StartSpace(screenWidth / 2f - boardSpaceLength / 2 + boardSpaceLength, screenHeight - boardSpaceLength / 2, boardSpaceLength, boardSpaceLength);
+        BoardSpace[][] startSpaces = new BoardSpace[2][3];
+        float pieceSize = boardSpaceLength * 0.75f;
+        startSpaces[0][0] = new StartSpace(screenWidth / 2f - pieceSize / 2 - pieceSize, pieceSize / 2, pieceSize, pieceSize);
+        startSpaces[0][1] = new StartSpace(screenWidth / 2f - pieceSize / 2, pieceSize / 2, pieceSize, pieceSize);
+        startSpaces[0][2] = new StartSpace(screenWidth / 2f - pieceSize / 2 + pieceSize, pieceSize / 2, pieceSize, pieceSize);
+        startSpaces[1][0] = new StartSpace(screenWidth / 2f - pieceSize / 2 - pieceSize, screenHeight - pieceSize / 2 - pieceSize, pieceSize, pieceSize);
+        startSpaces[1][1] = new StartSpace(screenWidth / 2f - pieceSize / 2, screenHeight - pieceSize / 2 - pieceSize, pieceSize, pieceSize);
+        startSpaces[1][2] = new StartSpace(screenWidth / 2f - pieceSize / 2 + pieceSize, screenHeight - pieceSize / 2 - pieceSize, pieceSize, pieceSize);
 
         playerPieces = new PlayPiece[2][3];
         for (int player = 0; player <= 1; player++) {
@@ -120,41 +120,36 @@ public class GameBoard {
 
     //gets called during touchDragged() event
     public boolean movePieces(final Vector2 touchPos) {
+        //find who's turn it is
+        int playerNumIndex;
         if (gameState.getCurrentTurn().equals(PlayerNum.ONE)) {
-            for (int i = 0; i < playerPieces[0].length; i++) {
-                if (playerPieces[0][i].getCircle().contains(touchPos) && !playerPieces[0][i].isPlayed()) {
-                    playerPieces[0][i].movePiece(touchPos);
-                    touchedPiece = playerPieces[0][i];
+            playerNumIndex = 0;
+        } else {
+            playerNumIndex = 1;
+        }
+        //find PlayerPiece() being dragged
+        for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
+            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
+                playerPieces[playerNumIndex][i].dragPiece(touchPos);
+                touchedPiece = playerPieces[playerNumIndex][i];
 
-                    //if touching a BoardSpace, then set currentSpace.
-                    Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
-                    while (boardSpaceIterator.hasNext()) {
-                        BoardSpace boardSpace = boardSpaceIterator.next();
-                        if (boardSpace.getRectangle().contains(playerPieces[0][i].getCircleCenter())) {
-                            playerPieces[0][i].setNewSpace(boardSpace);
-                        }
+                //if touching a BoardSpace, then set currentSpace.
+                Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
+                BoardSpace onSpace = null;
+                while (boardSpaceIterator.hasNext()) {
+                    BoardSpace boardSpace = boardSpaceIterator.next();
+                    if (boardSpace.getRectangle().contains(playerPieces[playerNumIndex][i].getCircleCenter())) {
+                        onSpace = boardSpace;
+                        break;
                     }
-
-                    return true;
                 }
-            }
-        } else if (gameState.getCurrentTurn().equals(PlayerNum.TWO)) {
-            for (int i = 0; i < playerPieces[1].length; i++) {
-                if (playerPieces[1][i].getCircle().contains(touchPos) && !playerPieces[1][i].isPlayed()) {
-                    playerPieces[1][i].movePiece(touchPos);
-                    touchedPiece = playerPieces[1][i];
-
-                    //if touching a BoardSpace, then set currentSpace.
-                    Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
-                    while (boardSpaceIterator.hasNext()) {
-                        BoardSpace boardSpace = boardSpaceIterator.next();
-                        if (boardSpace.getRectangle().contains(playerPieces[1][i].getCircleCenter())) {
-                            playerPieces[1][i].setNewSpace(boardSpace);
-                        }
-                    }
-
-                    return true;
+                if (onSpace != null) {
+                    playerPieces[playerNumIndex][i].setNewSpace(onSpace);
+                } else {
+                    playerPieces[playerNumIndex][i].resetSpace();
                 }
+
+                return true;
             }
         }
 
@@ -163,18 +158,18 @@ public class GameBoard {
 
     //gets called during touchUp() event. Snaps PlayPiece's to GameBoardSpace
     public void setPiece(PlayPiece playPiece) {
-        PlayerNum playerNum = playPiece.moveToNewSpace();
+        PlayerNum playerNum = playPiece.onTouchUp();
         if (playerNum != null) {
             gameState.nextTurn();
         }
     }
 
     public void render(final float delta, final SpriteBatch batch, final ShapeRenderer shapeRenderer) {
-        renderBoard(delta, shapeRenderer);
-        renderPlayerPieces(delta, batch, shapeRenderer);
+        renderBoard(shapeRenderer);
+        renderPlayerPieces(delta, batch);
     }
 
-    private void renderBoard(final float delta, final ShapeRenderer shapeRenderer) {
+    private void renderBoard(final ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.GRAY);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -190,12 +185,12 @@ public class GameBoard {
         shapeRenderer.end();
     }
 
-    private void renderPlayerPieces(final float delta, final SpriteBatch batch, ShapeRenderer shapeRenderer) {
+    private void renderPlayerPieces(final float delta, final SpriteBatch batch) {
         batch.begin();
 
         for (int player = 0; player <= 1; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
-                playerPieces[player][i].drawPiece(batch);
+                playerPieces[player][i].drawPiece(delta, batch);
             }
         }
 

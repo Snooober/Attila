@@ -1,6 +1,7 @@
 package com.nick.gameObjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -13,33 +14,55 @@ public class PlayPiece {
     private Circle drawCircle;
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
+    private boolean touchUp;
+    private TextureRegion pieceTexture;
 
     PlayPiece(final PlayerNum playerNum, final BoardSpace startSpace) {
         this.playerNum = playerNum;
         this.played = false;
         this.currentSpace = startSpace;
         this.newSpace = startSpace;
+        this.touchUp = false;
+        if (playerNum.equals(PlayerNum.ONE)) {
+            pieceTexture = AssetLoader.redPiece;
+        } else {
+            pieceTexture = AssetLoader.blackPiece;
+        }
         Rectangle rect = startSpace.getRectangle();
         setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
-    }
-
-    void setNewSpace(BoardSpace newSpace) {
-        if (newSpace instanceof StartSpace) {
-            return;
-        }
-        this.newSpace = newSpace;
     }
 
     public boolean isPlayed() {
         return played;
     }
 
-    void drawPiece(SpriteBatch batch) {
-        if (this.playerNum.equals(PlayerNum.ONE)) {
-            batch.draw(AssetLoader.redPiece, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
-        } else if (this.playerNum.equals(PlayerNum.TWO)) {
-            batch.draw(AssetLoader.blackPiece, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
+    void drawPiece(final float delta, SpriteBatch batch) {
+        float speed = 200 * delta;
+        if (touchUp) {
+            float distToX = newSpace.getCenter().x - drawCircle.x;
+            float distToY = newSpace.getCenter().y - drawCircle.y;
+
+            float distance = (float) Math.sqrt(distToX * distToX + distToY * distToY);
+            distToX = distToX / distance;
+            distToY = distToY / distance;
+
+            float travelX = distToX * speed;
+            float travelY = distToY * speed;
+
+            float distTravel = (float) Math.sqrt(travelX * travelX + travelY * travelY);
+            if (distTravel > distance) {
+                drawCircle.x = distToX;
+                drawCircle.y = distToY;
+            } else {
+                drawCircle.x = drawCircle.x + travelX;
+                drawCircle.y = drawCircle.y + travelY;
+            }
         }
+        if (getCircleCenter().equals(newSpace.getCenter())) {
+            touchUp = false;
+        }
+
+        batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
     }
 
     private void setDrawCircle(final float x, final float y, final float radius) {
@@ -50,21 +73,32 @@ public class PlayPiece {
         return drawCircle;
     }
 
-    void movePiece(final Vector2 touchPos) {
-        drawCircle.setPosition(touchPos.x, touchPos.y);
+    void dragPiece(final Vector2 touchPos) {
+        if (!touchUp) {
+            drawCircle.setPosition(touchPos.x, touchPos.y);
+        }
     }
 
     //moves piece to selected GameBoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
-    PlayerNum moveToNewSpace() {
+    PlayerNum onTouchUp() {
+        touchUp = true;
         if (currentSpace != newSpace) {
-            movePiece(newSpace.getCenter());
             currentSpace = newSpace;
             played = true;
             return playerNum;
-        } else {
-            movePiece(currentSpace.getCenter());
         }
         return null;
+    }
+
+    void setNewSpace(BoardSpace newSpace) {
+        if (newSpace instanceof StartSpace) {
+            return;
+        }
+        this.newSpace = newSpace;
+    }
+
+    void resetSpace() {
+        this.newSpace = currentSpace;
     }
 
     Vector2 getCircleCenter() {
