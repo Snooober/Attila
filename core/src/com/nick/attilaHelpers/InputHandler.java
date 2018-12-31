@@ -29,6 +29,7 @@ public class InputHandler extends InputAdapter {
 
         if (screen.board.touchedPiece != null && screen.board.touchedPiece.getCircle().contains(touchPos2)) {
             screen.board.setPiece(screen.board.touchedPiece);
+            screen.board.touchedPiece = null;
             return true;
         }
 

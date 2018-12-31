@@ -12,16 +12,15 @@ import java.util.*;
 public class GameBoard {
     public PlayPiece touchedPiece;
     public Map<Integer, BoardSpace> gameBoardSpaceMap;
+    public GameState gameState;
     private int numCols;
     private int numRows;
     private int screenWidth;
     private int screenHeight;
     private float padding;
     private float boardSpaceLength;
-    public GameState gameState;
     private float[] initCoords;
     private PlayPiece[][] playerPieces;
-    public Set<BoardSpace> boardSpaces;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -31,6 +30,7 @@ public class GameBoard {
         float factor = screenWidth / 60f;
         padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
         gameState = new GameState(this);
+        touchedPiece = null;
 
         initBoardSpaces();
     }
@@ -54,18 +54,15 @@ public class GameBoard {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 if (player == 0) {
                     playerPieces[player][i] = new PlayPiece(this, PlayerNum.ONE, startSpaces[player][i]);
-                    boardSpaces.add(startSpaces[player][i]);
                 } else {
                     playerPieces[player][i] = new PlayPiece(this, PlayerNum.TWO, startSpaces[player][i]);
-                    boardSpaces.add(startSpaces[player][i]);
                 }
             }
         }
     }
 
-    //make boardSpaces
+    //make gameBoardSpaces
     private void genBoardSpaces() {
-        boardSpaces = new HashSet<BoardSpace>();
         gameBoardSpaceMap = new HashMap<Integer, BoardSpace>();
         float[] currentCoords = new float[2];
         currentCoords[0] = initCoords[0];
@@ -77,7 +74,6 @@ public class GameBoard {
                 boardCoord[0] = j;
                 boardCoord[1] = i;
                 BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
-                boardSpaces.add(boardSpace);
                 gameBoardSpaceMap.put(Arrays.hashCode(boardCoord), boardSpace);
 
                 currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
@@ -128,36 +124,37 @@ public class GameBoard {
         //find who's turn it is
         int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
 
-        //find PlayerPiece() being dragged
+        touchedPiece = null;
+        //set touchedPiece to PlayerPiece() being dragged
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
             if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
-                if (playerPieces[playerNumIndex][i].isTouchUp()) {
-                    return false;
-                }
-                playerPieces[playerNumIndex][i].dragPiece(touchPos);
                 touchedPiece = playerPieces[playerNumIndex][i];
-
-                //if touching a playable BoardSpace(), then set currentSpace
-                Iterator<BoardSpace> playableSpaceIt = playerPieces[playerNumIndex][i].getPlayableSpaces().iterator();
-                BoardSpace onSpace = null;
-                while (playableSpaceIt.hasNext()) {
-                    BoardSpace boardSpace = playableSpaceIt.next();
-                    if (boardSpace.getRectangle().contains(playerPieces[playerNumIndex][i].getCircleCenter())) {
-                        onSpace = boardSpace;
-                        break;
-                    }
-                }
-                if (onSpace != null) {
-                    playerPieces[playerNumIndex][i].setNewSpace(onSpace);
-                } else {
-                    playerPieces[playerNumIndex][i].resetSpace();
-                }
-
-                return true;
             }
         }
 
-        return false;
+        if (touchedPiece==null || touchedPiece.isTouchUp()) {
+            return false;
+        }
+
+        touchedPiece.dragPiece(touchPos);
+
+        //if touchedPiece is touching a playable BoardSpace(), then set newSpace
+        Iterator<BoardSpace> playableSpaceIt = touchedPiece.getPlayableSpaces().iterator();
+        BoardSpace onSpace = null;
+        while (playableSpaceIt.hasNext()) {
+            BoardSpace boardSpace = playableSpaceIt.next();
+            if (boardSpace.getRectangle().contains(touchedPiece.getCircleCenter())) {
+                onSpace = boardSpace;
+                break;
+            }
+        }
+        if (onSpace != null) {
+            touchedPiece.setNewSpace(onSpace);
+        } else {
+            touchedPiece.resetNewSpace();
+        }
+
+        return true;
     }
 
     //gets called during touchUp() event. Snaps PlayPiece's to GameBoardSpace
@@ -189,9 +186,7 @@ public class GameBoard {
         shapeRenderer.setColor(Color.GRAY);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        Iterator<BoardSpace> boardSpaceIt = boardSpaces.iterator();
-        while (boardSpaceIt.hasNext()) {
-            BoardSpace boardSpace = boardSpaceIt.next();
+        for (BoardSpace boardSpace : gameBoardSpaceMap.values()) {
             if (boardSpace instanceof GameBoardSpace) {
                 Rectangle rect = boardSpace.getRectangle();
                 shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());

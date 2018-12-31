@@ -28,7 +28,6 @@ public class PlayPiece {
         this.startSpace = startSpace;
         this.currentSpace = startSpace;
         this.newSpace = startSpace;
-        this.playableSpaces = board.boardSpaces;
         this.played = false;
         this.touchUp = false;
         if (playerNum.equals(PlayerNum.ONE)) {
@@ -38,6 +37,7 @@ public class PlayPiece {
         }
         Rectangle rect = startSpace.getRectangle();
         setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
+        findPlayableSpaces();
     }
 
     public boolean isTouchUp() {
@@ -116,7 +116,7 @@ public class PlayPiece {
         this.newSpace = newSpace;
     }
 
-    void resetSpace() {
+    void resetNewSpace() {
         this.newSpace = currentSpace;
     }
 
@@ -127,7 +127,14 @@ public class PlayPiece {
     void findPlayableSpaces() {
         playableSpaces = new HashSet<BoardSpace>();
 
-        Integer[] currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
+        Integer[] currentBoardCoord;
+        if (currentSpace instanceof GameBoardSpace) {
+            currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
+        } else {
+            board.gameBoardSpaceMap.values().addAll(playableSpaces);
+            return;
+        }
+
         Integer[] moveValues = new Integer[4];
         moveValues[0] = -2;
         moveValues[1] = -1;
