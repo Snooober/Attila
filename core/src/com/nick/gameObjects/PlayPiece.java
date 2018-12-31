@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilaHelpers.AssetLoader;
 
+import java.util.List;
+
 public class PlayPiece {
 
     private boolean played;
@@ -110,5 +112,14 @@ public class PlayPiece {
 
     Vector2 getCircleCenter() {
         return new Vector2(drawCircle.x, drawCircle.y);
+    }
+
+    public List<BoardSpace> findPlayableSpaces() {
+        int[] boardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
+        Set<BoardSpace>
+
+
+
+
     }
 }

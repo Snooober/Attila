@@ -125,7 +125,7 @@ public class GameBoard {
         } else if (gameState.getGamePhase().equals(GamePhase.PLAY)) {
             return movePiecesPlayPhase(touchPos);
         }
-
+        return false;
     }
 
     private boolean movePiecesPlacePhase(final Vector2 touchPos) {
@@ -172,10 +172,20 @@ public class GameBoard {
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
             if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos)) {
                 //TODO here
+                if (playerPieces[playerNumIndex][i].isTouchUp()) {
+                    return true;
+                }
+                playerPieces[playerNumIndex][i].dragPiece(touchPos);
+                touchedPiece=playerPieces[playerNumIndex][i];
+
+
+
+
             }
         }
 
 
+        return false;
     }
 
     //gets called during touchUp() event. Snaps PlayPiece's to GameBoardSpace

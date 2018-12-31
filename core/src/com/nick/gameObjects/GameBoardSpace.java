@@ -5,12 +5,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameBoardSpace implements BoardSpace {
     private Rectangle rectangle;
-    private int boardCoordX;
-    private int boardCoordY;
+    private int boardCoord[];
 
     public GameBoardSpace(final int boardCoordX, final int boardCoordY, final Rectangle rectangle) {
-        this.boardCoordX = boardCoordX;
-        this.boardCoordY = boardCoordY;
+        this.boardCoord = new int[2];
+        this.boardCoord[0] = boardCoordX;
+        this.boardCoord[1] = boardCoordY;
         this.rectangle = rectangle;
     }
 
@@ -22,5 +22,9 @@ public class GameBoardSpace implements BoardSpace {
     @Override
     public Vector2 getCenter() {
         return new Vector2(rectangle.getX() + rectangle.width / 2, rectangle.getY() + rectangle.height / 2);
+    }
+
+    public int[] getBoardCoord() {
+        return boardCoord;
     }
 }
