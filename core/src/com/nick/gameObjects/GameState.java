@@ -40,7 +40,7 @@ public class GameState {
         for (int player = 0; player < playerPieces.length; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 playerPieces[player][i].setPlayed(false);
-                playerPieces[player][i].findPlayableSpaces(gameBoard.gameBoardSpaceMap);
+                playerPieces[player][i].findPlayableSpaces();
             }
         }
     }
@@ -50,6 +50,8 @@ public class GameState {
     }
 
     public GamePhase getGamePhase() {
+        Integer temp = 5;
+        temp.hashCode();
         return gamePhase;
     }
 }

@@ -11,17 +11,17 @@ import java.util.*;
 
 public class GameBoard {
     public PlayPiece touchedPiece;
-    public Map<Integer[], BoardSpace> gameBoardSpaceMap;
+    public Map<Integer, BoardSpace> gameBoardSpaceMap;
     private int numCols;
     private int numRows;
     private int screenWidth;
     private int screenHeight;
     private float padding;
     private float boardSpaceLength;
-    private GameState gameState;
+    public GameState gameState;
     private float[] initCoords;
     private PlayPiece[][] playerPieces;
-    private Set<BoardSpace> boardSpaces;
+    public Set<BoardSpace> boardSpaces;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -53,10 +53,10 @@ public class GameBoard {
         for (int player = 0; player < playerPieces.length; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 if (player == 0) {
-                    playerPieces[player][i] = new PlayPiece(PlayerNum.ONE, startSpaces[player][i], boardSpaces);
+                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.ONE, startSpaces[player][i]);
                     boardSpaces.add(startSpaces[player][i]);
                 } else {
-                    playerPieces[player][i] = new PlayPiece(PlayerNum.TWO, startSpaces[player][i], boardSpaces);
+                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.TWO, startSpaces[player][i]);
                     boardSpaces.add(startSpaces[player][i]);
                 }
             }
@@ -66,7 +66,7 @@ public class GameBoard {
     //make boardSpaces
     private void genBoardSpaces() {
         boardSpaces = new HashSet<BoardSpace>();
-        gameBoardSpaceMap = new HashMap<Integer[], BoardSpace>();
+        gameBoardSpaceMap = new HashMap<Integer, BoardSpace>();
         float[] currentCoords = new float[2];
         currentCoords[0] = initCoords[0];
         currentCoords[1] = initCoords[1];
@@ -78,7 +78,7 @@ public class GameBoard {
                 boardCoord[1] = i;
                 BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
                 boardSpaces.add(boardSpace);
-                gameBoardSpaceMap.put(boardCoord, boardSpace);
+                gameBoardSpaceMap.put(Arrays.hashCode(boardCoord), boardSpace);
 
                 currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
             }
@@ -130,10 +130,9 @@ public class GameBoard {
 
         //find PlayerPiece() being dragged
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
-            //TODO for PlacePhase, make sure pieces can't be moved that have already been played
-            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos)) {
+            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
                 if (playerPieces[playerNumIndex][i].isTouchUp()) {
-                    return true;
+                    return false;
                 }
                 playerPieces[playerNumIndex][i].dragPiece(touchPos);
                 touchedPiece = playerPieces[playerNumIndex][i];

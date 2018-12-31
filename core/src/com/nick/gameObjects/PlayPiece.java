@@ -7,28 +7,29 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilaHelpers.AssetLoader;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class PlayPiece {
 
     private boolean played;
     private PlayerNum playerNum;
     private Circle drawCircle;
+    private BoardSpace startSpace;
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
     private Set<BoardSpace> playableSpaces;
     private boolean touchUp;
     private TextureRegion pieceTexture;
+    private GameBoard board;
 
-    PlayPiece(final PlayerNum playerNum, final BoardSpace startSpace, final Set<BoardSpace> playableSpaces) {
+    PlayPiece(final GameBoard board, final PlayerNum playerNum, final BoardSpace startSpace) {
+        this.board = board;
         this.playerNum = playerNum;
+        this.startSpace = startSpace;
         this.currentSpace = startSpace;
-        this.playableSpaces = playableSpaces;
-        this.played = false;
         this.newSpace = startSpace;
+        this.playableSpaces = board.boardSpaces;
+        this.played = false;
         this.touchUp = false;
         if (playerNum.equals(PlayerNum.ONE)) {
             pieceTexture = AssetLoader.redPiece;
@@ -99,7 +100,10 @@ public class PlayPiece {
             touchUp = true;
             if (currentSpace != newSpace) {
                 currentSpace = newSpace;
-                played = true;
+                if (board.gameState.getGamePhase().equals(GamePhase.PLACE)) {
+                    played = true;
+                }
+                findPlayableSpaces();
                 return playerNum;
             }
         }
@@ -118,7 +122,7 @@ public class PlayPiece {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 
-    void findPlayableSpaces(Map<Integer[], BoardSpace> boardSpaceMap) {
+    void findPlayableSpaces() {
         playableSpaces = new HashSet<BoardSpace>();
 
         Integer[] currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
@@ -130,11 +134,12 @@ public class PlayPiece {
 
         for (int x = 0; x < moveValues.length; x++) {
             for (int y = 0; y < moveValues.length; y++) {
-                //TODO need to solve null pointer. try string key again
                 Integer[] playableCoord = new Integer[2];
                 playableCoord[0] = currentBoardCoord[0] + moveValues[x];
                 playableCoord[1] = currentBoardCoord[1] + moveValues[y];
-                playableSpaces.add(boardSpaceMap.get(playableCoord));
+                if (board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord)) != null) {
+                    playableSpaces.add(board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord)));
+                }
             }
         }
     }
