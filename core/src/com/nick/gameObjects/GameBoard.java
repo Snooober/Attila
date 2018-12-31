@@ -7,15 +7,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GameBoard {
     private int numCols;
     private int numRows;
     private float boardSpaceLength;
-    private List<BoardSpace> boardSpaces;
     private int screenWidth;
     private int screenHeight;
     private float padding;
@@ -23,6 +20,7 @@ public class GameBoard {
     private PlayPiece[][] playerPieces;
     public PlayPiece touchedPiece;
     private GameState gameState;
+    private Map<Integer[], BoardSpace> boardSpaceMap;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -66,16 +64,20 @@ public class GameBoard {
 
     //make boardSpaces
     private void genBoardSpaces() {
-        boardSpaces = new ArrayList<BoardSpace>();
+        boardSpaceMap = new HashMap<Integer[], BoardSpace>();
         float[] currentCoords = new float[2];
         currentCoords[0] = initCoords[0];
         currentCoords[1] = initCoords[1];
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
                 Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
+                Integer[] boardCoord = new Integer[2];
+                boardCoord[0] = numCols;
+                boardCoord[1] = numRows;
+                BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
+                boardSpaceMap.put(boardCoord, boardSpace);
+
                 currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
-                GameBoardSpace gameBoardSpace = new GameBoardSpace(numCols, numRows, rect);
-                boardSpaces.add(gameBoardSpace);
             }
 
             //reset x-coord
@@ -176,10 +178,9 @@ public class GameBoard {
                     return true;
                 }
                 playerPieces[playerNumIndex][i].dragPiece(touchPos);
-                touchedPiece=playerPieces[playerNumIndex][i];
+                touchedPiece = playerPieces[playerNumIndex][i];
 
-
-
+                playerPieces[playerNumIndex][i].findPlayableSpaces(boardSpaces);
 
             }
         }

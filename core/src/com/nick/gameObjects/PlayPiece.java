@@ -7,7 +7,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilaHelpers.AssetLoader;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PlayPiece {
 
@@ -114,11 +117,19 @@ public class PlayPiece {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 
-    public List<BoardSpace> findPlayableSpaces() {
-        int[] boardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
-        Set<BoardSpace>
+    public List<BoardSpace> findPlayableSpaces(final Map<Integer[], BoardSpace> boardSpaceMap) {
+        Integer[] currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
+        Set<BoardSpace> playableSpaces = new HashSet<BoardSpace>();
+        //TODO
 
-
+        for (int xAdd = 1; xAdd<=2; xAdd++) {
+            for (int yAdd = 1; yAdd<=2; yAdd++) {
+                Integer[] playableCoord = new Integer[2];
+                playableCoord[0] = currentBoardCoord[0]+xAdd;
+                playableCoord[1] = currentBoardCoord[1]+yAdd;
+                playableSpaces.add(boardSpaceMap.get(playableCoord));
+            }
+        }
 
 
     }
