@@ -7,8 +7,9 @@ public class GameBoardSpace extends BoardSpace {
     private Integer[] boardCoord;
 
     public GameBoardSpace(final Integer[] boardCoord, final Rectangle rectangle) {
+        super(rectangle);
         this.boardCoord = boardCoord;
-        super.setRectangle(rectangle);
+
     }
 
     public Integer[] getBoardCoord() {

@@ -5,16 +5,23 @@ import com.badlogic.gdx.math.Vector2;
 
 abstract class BoardSpace {
     private Rectangle rectangle;
+    private boolean occupied;
+
+    BoardSpace(final Rectangle rectangle) {
+        this.rectangle = rectangle;
+        this.occupied = false;
+    }
 
     public Rectangle getRectangle() {
         return rectangle;
     }
 
-    public void setRectangle(Rectangle rectangle) {
-        this.rectangle = rectangle;
+    public boolean isOccupied() {
+        return occupied;
     }
 
-    BoardSpace() {
+    public void setOccupied(boolean occupied) {
+        this.occupied = occupied;
     }
 
     public Vector2 getCenter() {

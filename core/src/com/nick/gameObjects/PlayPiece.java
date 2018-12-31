@@ -99,7 +99,9 @@ public class PlayPiece {
         if (!touchUp) {
             touchUp = true;
             if (currentSpace != newSpace) {
+                currentSpace.setOccupied(false);
                 currentSpace = newSpace;
+                currentSpace.setOccupied(true);
                 if (board.gameState.getGamePhase().equals(GamePhase.PLACE)) {
                     played = true;
                 }
@@ -137,7 +139,8 @@ public class PlayPiece {
                 Integer[] playableCoord = new Integer[2];
                 playableCoord[0] = currentBoardCoord[0] + moveValues[x];
                 playableCoord[1] = currentBoardCoord[1] + moveValues[y];
-                if (board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord)) != null) {
+                BoardSpace potentialSpace = board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord));
+                if (potentialSpace != null && !potentialSpace.isOccupied() && Math.abs(moveValues[x]) + Math.abs(moveValues[y]) == 3) {
                     playableSpaces.add(board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord)));
                 }
             }
