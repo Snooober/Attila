@@ -26,10 +26,23 @@ public class GameState {
         }
 
         if (gameBoard.allPlayed()) {
-            gamePhase = GamePhase.PLAY;
+            nextPhase();
         }
 
         return currentTurn;
+    }
+
+    private void nextPhase() {
+        gamePhase = GamePhase.PLAY;
+
+        //set playableSpaces() Set for each PlayPiece()
+        PlayPiece[][] playerPieces = gameBoard.getPlayerPieces();
+        for (int player = 0; player < playerPieces.length; player++) {
+            for (int i = 0; i < playerPieces[player].length; i++) {
+                playerPieces[player][i].setPlayed(false);
+                playerPieces[player][i].findPlayableSpaces(gameBoard.gameBoardSpaceMap);
+            }
+        }
     }
 
     public PlayerNum getCurrentTurn() {

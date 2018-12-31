@@ -19,18 +19,15 @@ public class PlayPiece {
     private Circle drawCircle;
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
-
-    public boolean isTouchUp() {
-        return touchUp;
-    }
-
+    private Set<BoardSpace> playableSpaces;
     private boolean touchUp;
     private TextureRegion pieceTexture;
 
-    PlayPiece(final PlayerNum playerNum, final BoardSpace startSpace) {
+    PlayPiece(final PlayerNum playerNum, final BoardSpace startSpace, final Set<BoardSpace> playableSpaces) {
         this.playerNum = playerNum;
-        this.played = false;
         this.currentSpace = startSpace;
+        this.playableSpaces = playableSpaces;
+        this.played = false;
         this.newSpace = startSpace;
         this.touchUp = false;
         if (playerNum.equals(PlayerNum.ONE)) {
@@ -40,6 +37,10 @@ public class PlayPiece {
         }
         Rectangle rect = startSpace.getRectangle();
         setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
+    }
+
+    public boolean isTouchUp() {
+        return touchUp;
     }
 
     public boolean isPlayed() {
@@ -117,20 +118,28 @@ public class PlayPiece {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 
-    public List<BoardSpace> findPlayableSpaces(final Map<Integer[], BoardSpace> boardSpaceMap) {
-        Integer[] currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
-        Set<BoardSpace> playableSpaces = new HashSet<BoardSpace>();
-        //TODO
+    void findPlayableSpaces(Map<Integer[], BoardSpace> boardSpaceMap) {
+        playableSpaces = new HashSet<BoardSpace>();
 
-        for (int xAdd = 1; xAdd<=2; xAdd++) {
-            for (int yAdd = 1; yAdd<=2; yAdd++) {
+        Integer[] currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
+        Integer[] moveValues = new Integer[4];
+        moveValues[0] = -2;
+        moveValues[1] = -1;
+        moveValues[2] = 1;
+        moveValues[3] = 2;
+
+        for (int x = 0; x < moveValues.length; x++) {
+            for (int y = 0; y < moveValues.length; y++) {
+                //TODO need to solve null pointer. try string key again
                 Integer[] playableCoord = new Integer[2];
-                playableCoord[0] = currentBoardCoord[0]+xAdd;
-                playableCoord[1] = currentBoardCoord[1]+yAdd;
+                playableCoord[0] = currentBoardCoord[0] + moveValues[x];
+                playableCoord[1] = currentBoardCoord[1] + moveValues[y];
                 playableSpaces.add(boardSpaceMap.get(playableCoord));
             }
         }
+    }
 
-
+    public Set<BoardSpace> getPlayableSpaces() {
+        return playableSpaces;
     }
 }

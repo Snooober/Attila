@@ -10,17 +10,18 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.*;
 
 public class GameBoard {
+    public PlayPiece touchedPiece;
+    public Map<Integer[], BoardSpace> gameBoardSpaceMap;
     private int numCols;
     private int numRows;
-    private float boardSpaceLength;
     private int screenWidth;
     private int screenHeight;
     private float padding;
+    private float boardSpaceLength;
+    private GameState gameState;
     private float[] initCoords;
     private PlayPiece[][] playerPieces;
-    public PlayPiece touchedPiece;
-    private GameState gameState;
-    private Map<Integer[], BoardSpace> boardSpaceMap;
+    private Set<BoardSpace> boardSpaces;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -49,13 +50,13 @@ public class GameBoard {
         startSpaces[1][2] = new StartSpace(screenWidth / 2f - pieceSize / 2 + pieceSize, screenHeight - pieceSize / 2 - pieceSize, pieceSize, pieceSize);
 
         playerPieces = new PlayPiece[2][3];
-        for (int player = 0; player <= 1; player++) {
-            for (int i = 0; i < 3; i++) {
+        for (int player = 0; player < playerPieces.length; player++) {
+            for (int i = 0; i < playerPieces[player].length; i++) {
                 if (player == 0) {
-                    playerPieces[player][i] = new PlayPiece(PlayerNum.ONE, startSpaces[player][i]);
+                    playerPieces[player][i] = new PlayPiece(PlayerNum.ONE, startSpaces[player][i], boardSpaces);
                     boardSpaces.add(startSpaces[player][i]);
                 } else {
-                    playerPieces[player][i] = new PlayPiece(PlayerNum.TWO, startSpaces[player][i]);
+                    playerPieces[player][i] = new PlayPiece(PlayerNum.TWO, startSpaces[player][i], boardSpaces);
                     boardSpaces.add(startSpaces[player][i]);
                 }
             }
@@ -64,7 +65,8 @@ public class GameBoard {
 
     //make boardSpaces
     private void genBoardSpaces() {
-        boardSpaceMap = new HashMap<Integer[], BoardSpace>();
+        boardSpaces = new HashSet<BoardSpace>();
+        gameBoardSpaceMap = new HashMap<Integer[], BoardSpace>();
         float[] currentCoords = new float[2];
         currentCoords[0] = initCoords[0];
         currentCoords[1] = initCoords[1];
@@ -72,10 +74,11 @@ public class GameBoard {
             for (int j = 0; j < numCols; j++) {
                 Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
                 Integer[] boardCoord = new Integer[2];
-                boardCoord[0] = numCols;
-                boardCoord[1] = numRows;
+                boardCoord[0] = j;
+                boardCoord[1] = i;
                 BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
-                boardSpaceMap.put(boardCoord, boardSpace);
+                boardSpaces.add(boardSpace);
+                gameBoardSpaceMap.put(boardCoord, boardSpace);
 
                 currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
             }
@@ -122,32 +125,24 @@ public class GameBoard {
 
     //gets called during touchDragged() event
     public boolean movePieces(final Vector2 touchPos) {
-        if (gameState.getGamePhase().equals(GamePhase.PLACE)) {
-            return movePiecesPlacePhase(touchPos);
-        } else if (gameState.getGamePhase().equals(GamePhase.PLAY)) {
-            return movePiecesPlayPhase(touchPos);
-        }
-        return false;
-    }
-
-    private boolean movePiecesPlacePhase(final Vector2 touchPos) {
         //find who's turn it is
         int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
 
         //find PlayerPiece() being dragged
         for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
-            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
+            //TODO for PlacePhase, make sure pieces can't be moved that have already been played
+            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos)) {
                 if (playerPieces[playerNumIndex][i].isTouchUp()) {
                     return true;
                 }
                 playerPieces[playerNumIndex][i].dragPiece(touchPos);
                 touchedPiece = playerPieces[playerNumIndex][i];
 
-                //if touching a BoardSpace, then set currentSpace.
-                Iterator<BoardSpace> boardSpaceIterator = boardSpaces.iterator();
+                //if touching a playable BoardSpace(), then set currentSpace
+                Iterator<BoardSpace> playableSpaceIt = playerPieces[playerNumIndex][i].getPlayableSpaces().iterator();
                 BoardSpace onSpace = null;
-                while (boardSpaceIterator.hasNext()) {
-                    BoardSpace boardSpace = boardSpaceIterator.next();
+                while (playableSpaceIt.hasNext()) {
+                    BoardSpace boardSpace = playableSpaceIt.next();
                     if (boardSpace.getRectangle().contains(playerPieces[playerNumIndex][i].getCircleCenter())) {
                         onSpace = boardSpace;
                         break;
@@ -162,29 +157,6 @@ public class GameBoard {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    private boolean movePiecesPlayPhase(final Vector2 touchPos) {
-        //find who's turn it is
-        int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
-
-        //find PlayerPiece() being dragged
-        for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
-            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos)) {
-                //TODO here
-                if (playerPieces[playerNumIndex][i].isTouchUp()) {
-                    return true;
-                }
-                playerPieces[playerNumIndex][i].dragPiece(touchPos);
-                touchedPiece = playerPieces[playerNumIndex][i];
-
-                playerPieces[playerNumIndex][i].findPlayableSpaces(boardSpaces);
-
-            }
-        }
-
 
         return false;
     }
@@ -240,5 +212,9 @@ public class GameBoard {
         }
 
         batch.end();
+    }
+
+    public PlayPiece[][] getPlayerPieces() {
+        return playerPieces;
     }
 }
