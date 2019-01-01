@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GameBoard {
     public PlayPiece touchedPiece;
@@ -124,15 +127,16 @@ public class GameBoard {
         //find who's turn it is
         int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
 
-        touchedPiece = null;
         //set touchedPiece to PlayerPiece() being dragged
-        for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
-            if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
-                touchedPiece = playerPieces[playerNumIndex][i];
+        if (touchedPiece == null) {
+            for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
+                if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
+                    touchedPiece = playerPieces[playerNumIndex][i];
+                }
             }
         }
 
-        if (touchedPiece==null || touchedPiece.isTouchUp()) {
+        if (touchedPiece == null || touchedPiece.isTouchUp()) {
             return false;
         }
 

@@ -125,13 +125,14 @@ public class PlayPiece {
     }
 
     void findPlayableSpaces() {
+        //TODO call this for all pieces after every play
         playableSpaces = new HashSet<BoardSpace>();
 
         Integer[] currentBoardCoord;
         if (currentSpace instanceof GameBoardSpace) {
             currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
         } else {
-            board.gameBoardSpaceMap.values().addAll(playableSpaces);
+            playableSpaces = new HashSet<BoardSpace>(board.gameBoardSpaceMap.values());
             return;
         }
 
