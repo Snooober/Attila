@@ -40,7 +40,6 @@ public class GameState {
         for (int player = 0; player < playerPieces.length; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 playerPieces[player][i].setPlayed(false);
-                playerPieces[player][i].findPlayableSpaces();
             }
         }
     }

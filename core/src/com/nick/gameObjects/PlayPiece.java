@@ -37,7 +37,6 @@ public class PlayPiece {
         }
         Rectangle rect = startSpace.getRectangle();
         setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
-        findPlayableSpaces();
     }
 
     public boolean isTouchUp() {
@@ -105,7 +104,7 @@ public class PlayPiece {
                 if (board.gameState.getGamePhase().equals(GamePhase.PLACE)) {
                     played = true;
                 }
-                findPlayableSpaces();
+
                 return playerNum;
             }
         }
@@ -124,16 +123,21 @@ public class PlayPiece {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 
-    void findPlayableSpaces() {
-        //TODO call this for all pieces after every play
+    public Set<BoardSpace> getPlayableSpaces() {
         playableSpaces = new HashSet<BoardSpace>();
 
         Integer[] currentBoardCoord;
         if (currentSpace instanceof GameBoardSpace) {
             currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
         } else {
-            playableSpaces = new HashSet<BoardSpace>(board.gameBoardSpaceMap.values());
-            return;
+            Iterator<BoardSpace> boardSpaceIt = board.gameBoardSpaceMap.values().iterator();
+            while (boardSpaceIt.hasNext()) {
+                BoardSpace potentialSpace = boardSpaceIt.next();
+                if (!potentialSpace.isOccupied()) {
+                    playableSpaces.add(potentialSpace);
+                }
+            }
+            return playableSpaces;
         }
 
         Integer[] moveValues = new Integer[4];
@@ -153,9 +157,6 @@ public class PlayPiece {
                 }
             }
         }
-    }
-
-    public Set<BoardSpace> getPlayableSpaces() {
         return playableSpaces;
     }
 }
