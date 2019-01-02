@@ -3,7 +3,6 @@ package com.nick.attilaHelpers;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.nick.gameObjects.PlayPiece;
 import com.nick.screens.GameScreen;
 
 public class InputHandler extends InputAdapter {

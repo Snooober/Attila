@@ -15,8 +15,6 @@ public class GameScreen implements Screen {
     public GameBoard board;
     private Attila game;
     private ShapeRenderer shapeRenderer;
-    private int screenWidth;
-    private int screenHeight;
 
     public GameScreen(final Attila game) {
         Gdx.input.setInputProcessor(new InputHandler(this));
@@ -25,9 +23,6 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
         shapeRenderer = new ShapeRenderer();
         AssetLoader.load();
-
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
 
         board = new GameBoard(5, 4);
     }
@@ -47,7 +42,6 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         board.render(delta, game.batch, shapeRenderer);
     }
-
 
 
     @Override

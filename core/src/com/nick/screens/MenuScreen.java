@@ -20,8 +20,6 @@ public class MenuScreen implements Screen, InputProcessor {
 
     private BitmapFont startFont;
     private BitmapFont exitFont;
-    private String startGame = "Start";
-    private String exit = "Exit";
     private Rectangle startButton;
     private Rectangle exitButton;
     private GlyphLayout startLayout;
@@ -44,8 +42,8 @@ public class MenuScreen implements Screen, InputProcessor {
         startFont = new BitmapFont();
         exitFont = new BitmapFont();
 
-        startLayout.setText(startFont, startGame);
-        exitLayout.setText(exitFont, exit);
+        startLayout.setText(startFont, "Start");
+        exitLayout.setText(exitFont, "Exit");
 
         startButton.set(screenWidth / 2f, screenHeight / 2f, startLayout.width, startLayout.height);
         exitButton.set(startButton.getX(), (screenHeight / 2f) + startButton.height, exitLayout.width, exitLayout.height);

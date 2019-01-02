@@ -75,8 +75,6 @@ public class PlaceActionsController implements GameActionsController {
             board.setTouchedPiece(null);
             return true;
         }
-
         return false;
-
     }
 }
