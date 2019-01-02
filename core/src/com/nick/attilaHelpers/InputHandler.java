@@ -3,6 +3,7 @@ package com.nick.attilaHelpers;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.nick.gameObjects.PlayPiece;
 import com.nick.screens.GameScreen;
 
 public class InputHandler extends InputAdapter {
@@ -18,7 +19,7 @@ public class InputHandler extends InputAdapter {
         screen.camera.unproject(touchPos);
         Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
 
-        return screen.board.movePieces(touchPos2);
+        return screen.board.onTouchDrag(touchPos2);
     }
 
     @Override
@@ -27,13 +28,6 @@ public class InputHandler extends InputAdapter {
         screen.camera.unproject(touchPos);
         Vector2 touchPos2 = new Vector2(touchPos.x, touchPos.y);
 
-        if (screen.board.touchedPiece != null && screen.board.touchedPiece.getCircle().contains(touchPos2)) {
-            screen.board.setPiece(screen.board.touchedPiece);
-            screen.board.touchedPiece = null;
-            return true;
-        }
-
-        return false;
+        return screen.board.onTouchUp(touchPos2);
     }
-
 }

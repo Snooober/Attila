@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 public class GameBoard {
-    public PlayPiece touchedPiece;
-    public Map<Integer, BoardSpace> gameBoardSpaceMap;
-    public GameState gameState;
+    private PlayPiece touchedPiece;
+    private Map<Integer, BoardSpace> gameBoardSpaceMap;
+    private PlayerNum currentTurn;
+    private GameActionsController controller;
     private int numCols;
     private int numRows;
     private int screenWidth;
@@ -32,10 +33,34 @@ public class GameBoard {
         screenHeight = Gdx.graphics.getHeight();
         float factor = screenWidth / 60f;
         padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
-        gameState = new GameState(this);
         touchedPiece = null;
+        controller = new PlaceActionsController(this);
+        init();
+    }
 
+    public Map<Integer, BoardSpace> getGameBoardSpaceMap() {
+        return gameBoardSpaceMap;
+    }
+
+    public PlayPiece getTouchedPiece() {
+        return touchedPiece;
+    }
+
+    public void setTouchedPiece(PlayPiece touchedPiece) {
+        this.touchedPiece = touchedPiece;
+    }
+
+    public PlayerNum getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public void setCurrentTurn(PlayerNum currentTurn) {
+        this.currentTurn = currentTurn;
+    }
+
+    private void init() {
         initBoardSpaces();
+        initPlayerTurn();
     }
 
     private void initBoardSpaces() {
@@ -122,51 +147,22 @@ public class GameBoard {
         boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
     }
 
-    //gets called during touchDragged() event
-    public boolean movePieces(final Vector2 touchPos) {
-        //find who's turn it is
-        int playerNumIndex = gameState.getCurrentTurn().getPlayerIndex();
-
-        //set touchedPiece to PlayerPiece() being dragged
-        if (touchedPiece == null) {
-            for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
-                if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
-                    touchedPiece = playerPieces[playerNumIndex][i];
-                }
-            }
-        }
-
-        if (touchedPiece == null || touchedPiece.isTouchUp()) {
-            return false;
-        }
-
-        touchedPiece.dragPiece(touchPos);
-
-        //if touchedPiece is touching a playable BoardSpace(), then set newSpace
-        Iterator<BoardSpace> playableSpaceIt = touchedPiece.getPlayableSpaces().iterator();
-        BoardSpace onSpace = null;
-        while (playableSpaceIt.hasNext()) {
-            BoardSpace boardSpace = playableSpaceIt.next();
-            if (boardSpace.getRectangle().contains(touchedPiece.getCircleCenter())) {
-                onSpace = boardSpace;
-                break;
-            }
-        }
-        if (onSpace != null) {
-            touchedPiece.setNewSpace(onSpace);
+    private void initPlayerTurn() {
+        boolean rand = new Random().nextBoolean();
+        if (rand) {
+            currentTurn = PlayerNum.ONE;
         } else {
-            touchedPiece.resetNewSpace();
+            currentTurn = PlayerNum.TWO;
         }
-
-        return true;
     }
 
-    //gets called during touchUp() event. Snaps PlayPiece's to GameBoardSpace
-    public void setPiece(PlayPiece playPiece) {
-        PlayerNum playerNum = playPiece.onTouchUp();
-        if (playerNum != null) {
-            gameState.nextTurn();
-        }
+    //gets called during touchDragged() event
+    public boolean onTouchDrag(final Vector2 touchPos) {
+        return controller.onTouchDrag(touchPos);
+    }
+
+    public boolean onTouchUp(final Vector2 touchPos) {
+        return controller.onTouchUp(touchPos);
     }
 
     public boolean allPlayed() {
@@ -179,6 +175,14 @@ public class GameBoard {
         }
 
         return true;
+    }
+
+    public void nextTurn() {
+        controller.nextTurn();
+    }
+
+    public void nextPhase() {
+        controller = new PlayActionsController(this);
     }
 
     public void render(final float delta, final SpriteBatch batch, final ShapeRenderer shapeRenderer) {

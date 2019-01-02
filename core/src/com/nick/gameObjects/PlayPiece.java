@@ -12,24 +12,19 @@ import java.util.*;
 public class PlayPiece {
 
     private boolean played;
-    private PlayerNum playerNum;
     private Circle drawCircle;
-    private BoardSpace startSpace;
     private BoardSpace currentSpace;
     private BoardSpace newSpace;
-    private Set<BoardSpace> playableSpaces;
-    private boolean touchUp;
+    private boolean moving;
     private TextureRegion pieceTexture;
     private GameBoard board;
 
     PlayPiece(final GameBoard board, final PlayerNum playerNum, final BoardSpace startSpace) {
         this.board = board;
-        this.playerNum = playerNum;
-        this.startSpace = startSpace;
         this.currentSpace = startSpace;
         this.newSpace = startSpace;
         this.played = false;
-        this.touchUp = false;
+        this.moving = false;
         if (playerNum.equals(PlayerNum.ONE)) {
             pieceTexture = AssetLoader.redPiece;
         } else {
@@ -39,8 +34,8 @@ public class PlayPiece {
         setDrawCircle(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width / 2);
     }
 
-    public boolean isTouchUp() {
-        return touchUp;
+    public boolean isMoving() {
+        return moving;
     }
 
     public boolean isPlayed() {
@@ -52,15 +47,15 @@ public class PlayPiece {
     }
 
     void drawPiece(final float delta, SpriteBatch batch) {
-        moveToSpace(delta);
+        moveToNewSpace(delta);
         batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
     }
 
-    private void moveToSpace(final float delta) {
+    private void moveToNewSpace(final float delta) {
         float speed = 3500 * delta;
-        if (touchUp) {
-            float distToX = newSpace.getCenter().x - drawCircle.x;
-            float distToY = newSpace.getCenter().y - drawCircle.y;
+        if (moving) {
+            float distToX = currentSpace.getCenter().x - drawCircle.x;
+            float distToY = currentSpace.getCenter().y - drawCircle.y;
 
             float distance = (float) Math.sqrt(distToX * distToX + distToY * distToY);
             distToX = distToX / distance;
@@ -71,9 +66,9 @@ public class PlayPiece {
 
             float distTravel = (float) Math.sqrt(travelX * travelX + travelY * travelY);
             if (distTravel > distance || distance == 0) {
-                drawCircle.x = newSpace.getCenter().x;
-                drawCircle.y = newSpace.getCenter().y;
-                touchUp = false;
+                drawCircle.x = currentSpace.getCenter().x;
+                drawCircle.y = currentSpace.getCenter().y;
+                moving = false;
             } else {
                 drawCircle.x = drawCircle.x + travelX;
                 drawCircle.y = drawCircle.y + travelY;
@@ -93,22 +88,20 @@ public class PlayPiece {
         drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
-    //moves piece to selected GameBoardSpace. If moved, returns the PlayerNum for the piece that is moved. Else returns null
-    PlayerNum onTouchUp() {
-        if (!touchUp) {
-            touchUp = true;
+    //sets currentSpace to newSpace if they are not equal. Returns true if currentSpace changes.
+    public boolean setCurrentSpace() {
+        if (!moving) {
+            moving = true;
             if (currentSpace != newSpace) {
                 currentSpace.setOccupied(false);
                 currentSpace = newSpace;
                 currentSpace.setOccupied(true);
-                if (board.gameState.getGamePhase().equals(GamePhase.PLACE)) {
-                    played = true;
-                }
+                played = true;
 
-                return playerNum;
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     void setNewSpace(BoardSpace newSpace) {
@@ -124,13 +117,14 @@ public class PlayPiece {
     }
 
     public Set<BoardSpace> getPlayableSpaces() {
-        playableSpaces = new HashSet<BoardSpace>();
+        Set<BoardSpace> playableSpaces = new HashSet<BoardSpace>();
+        Map<Integer, BoardSpace> gameBoardSpaceMap = board.getGameBoardSpaceMap();
 
         Integer[] currentBoardCoord;
         if (currentSpace instanceof GameBoardSpace) {
             currentBoardCoord = ((GameBoardSpace) currentSpace).getBoardCoord();
         } else {
-            Iterator<BoardSpace> boardSpaceIt = board.gameBoardSpaceMap.values().iterator();
+            Iterator<BoardSpace> boardSpaceIt = gameBoardSpaceMap.values().iterator();
             while (boardSpaceIt.hasNext()) {
                 BoardSpace potentialSpace = boardSpaceIt.next();
                 if (!potentialSpace.isOccupied()) {
@@ -151,9 +145,9 @@ public class PlayPiece {
                 Integer[] playableCoord = new Integer[2];
                 playableCoord[0] = currentBoardCoord[0] + moveValues[x];
                 playableCoord[1] = currentBoardCoord[1] + moveValues[y];
-                BoardSpace potentialSpace = board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord));
+                BoardSpace potentialSpace = board.getGameBoardSpaceMap().get(Arrays.hashCode(playableCoord));
                 if (potentialSpace != null && !potentialSpace.isOccupied() && Math.abs(moveValues[x]) + Math.abs(moveValues[y]) == 3) {
-                    playableSpaces.add(board.gameBoardSpaceMap.get(Arrays.hashCode(playableCoord)));
+                    playableSpaces.add(board.getGameBoardSpaceMap().get(Arrays.hashCode(playableCoord)));
                 }
             }
         }
