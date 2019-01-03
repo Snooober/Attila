@@ -1,12 +1,19 @@
 package com.nick.gameObjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.nick.attilaHelpers.InputSwitchListener;
+import com.nick.attilaHelpers.InputSwitcher;
+import com.nick.attilaHelpers.RemoveSpaceInputHandler;
 
-public class PlayActionsController implements GameActionsController {
-    private GameBoard board;
+public class PlayActionsController extends GameActionsControllerImpl implements InputSwitchListener {
+    @Override
+    public void switchInput() {
+
+    }
 
     public PlayActionsController(final GameBoard board) {
-        this.board = board;
+        super(board);
 
         //make all PlayerPieces() un-played
         PlayPiece[][] playerPieces = board.getPlayerPieces();
@@ -20,17 +27,16 @@ public class PlayActionsController implements GameActionsController {
     }
 
     @Override
-    public void nextTurn() {
+    public boolean onTouchUp(final Vector2 touchPos) {
+        PlayPiece touchedPiece = board.getTouchedPiece();
+        if (touchedPiece != null && touchedPiece.getCircle().contains(touchPos)) {
+            if (touchedPiece.setCurrentSpace()) {
+                //TODO player chooses empty space to remove
 
-    }
 
-    @Override
-    public boolean onTouchDrag(Vector2 touchPos) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchUp(Vector2 touchPos) {
+                return true;
+            }
+        }
         return false;
     }
 }

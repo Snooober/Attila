@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.nick.attilaHelpers.InputHandler;
+import com.nick.attilaHelpers.RemoveSpaceInputHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;

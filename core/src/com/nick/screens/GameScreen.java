@@ -8,9 +8,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.nick.Attila;
 import com.nick.attilaHelpers.AssetLoader;
 import com.nick.attilaHelpers.InputHandler;
+import com.nick.attilaHelpers.InputSwitchListener;
 import com.nick.gameObjects.GameBoard;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, InputSwitchListener {
+
+    @Override
+    public void switchInput() {
+
+
+    }
+
     public OrthographicCamera camera;
     public GameBoard board;
     private Attila game;
