@@ -2,9 +2,7 @@ package com.nick.gameObjects;
 
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.Iterator;
-
-public class PlaceActionsController extends GameActionsControllerImpl {
+public class PlaceActionsController extends GameActionsController {
 
     public PlaceActionsController(final GameBoard board) {
         super(board);

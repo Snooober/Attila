@@ -6,10 +6,20 @@ import com.badlogic.gdx.math.Vector2;
 abstract class BoardSpace {
     private Rectangle rectangle;
     private boolean occupied;
+    private boolean exists;
 
     BoardSpace(final Rectangle rectangle) {
         this.rectangle = rectangle;
         this.occupied = false;
+        this.exists = true;
+    }
+
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
     }
 
     public Rectangle getRectangle() {

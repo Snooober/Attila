@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.nick.attilaHelpers.InputHandler;
-import com.nick.attilaHelpers.RemoveSpaceInputHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -167,6 +165,10 @@ public class GameBoard {
         return controller.onTouchUp(touchPos);
     }
 
+    public boolean onTouchDown(final Vector2 touchPos) {
+        return controller.onTouchDown(touchPos);
+    }
+
     public boolean allPlayed() {
         for (int player = 0; player <= 1; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
@@ -197,7 +199,7 @@ public class GameBoard {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         for (BoardSpace boardSpace : gameBoardSpaceMap.values()) {
-            if (boardSpace instanceof GameBoardSpace) {
+            if (boardSpace.isExists()) {
                 Rectangle rect = boardSpace.getRectangle();
                 shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
             }
