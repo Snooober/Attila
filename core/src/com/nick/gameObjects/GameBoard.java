@@ -224,6 +224,9 @@ public class GameBoard {
 
         for (BoardSpace boardSpace : gameBoardSpaceMap.values()) {
             if (boardSpace.isExists()) {
+                Color color = ((GameBoardSpace) boardSpace).getColor();
+                shapeRenderer.setColor(color);
+
                 Rectangle rect = boardSpace.getRectangle();
                 shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
             }

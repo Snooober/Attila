@@ -1,5 +1,6 @@
 package com.nick.gameObjects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Map;
@@ -27,10 +28,18 @@ public class PlayActionsController extends GameActionsController {
     @Override
     public boolean onTouchUp(final Vector2 touchPos) {
         PlayPiece touchedPiece = board.getTouchedPiece();
+
         if (touchedPiece != null && touchedPiece.getCircle().contains(touchPos)) {
+            //clear playable color highlight
+            for (BoardSpace space :
+                    board.getGameBoardSpaceMap().values()) {
+                ((GameBoardSpace) space).setPlayableColor(Color.GRAY);
+            }
+
             if (touchedPiece.setCurrentSpace()) {
                 awaitRemove = true;
             }
+
             board.setTouchedPiece(null);
             return true;
         }
@@ -87,6 +96,36 @@ public class PlayActionsController extends GameActionsController {
                     return true;
                 }
             }
+        } else {
+            PlayPiece[][] playerPieces = board.getPlayerPieces();
+
+            //find who's turn it is
+            int playerNumIndex = board.getCurrentTurn().getPlayerIndex();
+
+            //set touchedPiece to PlayerPiece() being dragged
+            for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
+                if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
+                    board.setTouchedPiece(playerPieces[playerNumIndex][i]);
+                    break;
+                }
+            }
+
+            PlayPiece touchedPiece = board.getTouchedPiece();
+
+            if (touchedPiece == null || touchedPiece.isMoving()) {
+                return false;
+            }
+
+            for (BoardSpace space :
+                    board.getGameBoardSpaceMap().values()) {
+                ((GameBoardSpace) space).setPlayableColor(Color.DARK_GRAY);
+            }
+            for (BoardSpace space :
+                    touchedPiece.getPlayableSpaces()) {
+                ((GameBoardSpace) space).setPlayableColor(Color.GRAY);
+            }
+
+            return true;
         }
 
         return false;

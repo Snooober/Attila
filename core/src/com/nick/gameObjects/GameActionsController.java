@@ -18,7 +18,7 @@ public abstract class GameActionsController {
         //find who's turn it is
         int playerNumIndex = board.getCurrentTurn().getPlayerIndex();
 
-        //set touchedPiece to PlayerPiece() being dragged
+        //set touchedPiece to PlayerPiece() being dragged if onTouchDown() didn't set it correctly
         if (touchedPiece == null) {
             for (int i = 0; i < playerPieces[playerNumIndex].length; i++) {
                 if (playerPieces[playerNumIndex][i].getCircle().contains(touchPos) && !playerPieces[playerNumIndex][i].isPlayed()) {
