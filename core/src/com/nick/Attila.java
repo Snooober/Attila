@@ -16,6 +16,7 @@ public class Attila extends Game {
 
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void render() {
         super.render();

@@ -2,7 +2,7 @@ package com.nick.gameObjects;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public class StartSpace extends BoardSpace {
+class StartSpace extends BoardSpace {
 
     public StartSpace(final float x, final float y, final float width, final float height) {
         super(new Rectangle(x, y, width, height));

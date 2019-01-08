@@ -3,7 +3,7 @@ package com.nick.gameObjects;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 
-public class GameBoardSpace extends BoardSpace {
+class GameBoardSpace extends BoardSpace {
     private Integer[] boardCoord;
     private Color color;
 

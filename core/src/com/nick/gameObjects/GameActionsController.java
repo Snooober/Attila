@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Iterator;
 
-public abstract class GameActionsController {
+abstract class GameActionsController {
     GameBoard board;
 
-    public GameActionsController(GameBoard board) {
+    GameActionsController(GameBoard board) {
         this.board = board;
     }
 
@@ -52,6 +52,7 @@ public abstract class GameActionsController {
         return true;
     }
 
+    @SuppressWarnings("unused")
     public abstract void nextTurn();
 
     public boolean onTouchDown(final Vector2 touchPos) {

@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetLoader {
-    public static Texture playerPieces;
     public static TextureRegion redPiece;
     public static TextureRegion blackPiece;
+    private static Texture playerPieces;
 
     public static void load() {
         playerPieces = new Texture(Gdx.files.internal("marbles.png"));
