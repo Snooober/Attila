@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.nick.Attila;
 
 public class MenuScreen implements Screen, InputProcessor {
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
     private Attila game;
     private int screenWidth;
     private int screenHeight;
@@ -57,10 +57,11 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.15f, .15f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
         startFont.draw(game.batch, startLayout, screenWidth / 2f, screenHeight / 2f);

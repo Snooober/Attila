@@ -213,7 +213,7 @@ public class GameBoard {
                 winner = "BLACK";
             }
 
-            endMessage.draw(batch, endGameWinner.toString() + " is the winner!", screenWidth / 2f, screenHeight / 2f);
+            endMessage.draw(batch, winner + " is the winner!", screenWidth / 2f, screenHeight / 2f);
             batch.end();
         }
     }
