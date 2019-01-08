@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.nick.attilaHelpers.InputEndGame;
+import com.nick.screens.GameScreen;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,10 +29,12 @@ public class GameBoard {
     private float[] initCoords;
     private PlayPiece[][] playerPieces;
     private PlayerNum endGameWinner;
+    private GameScreen gameScreen;
 
-    public GameBoard(final int numCols, final int numRows) {
+    public GameBoard(final int numCols, final int numRows, final GameScreen gameScreen) {
         this.numCols = numCols;
         this.numRows = numRows;
+        this.gameScreen = gameScreen;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         float factor = screenWidth / 60f;
@@ -174,7 +177,7 @@ public class GameBoard {
     }
 
     public void endGame(PlayerNum playerNum) {
-        Gdx.input.setInputProcessor(new InputEndGame());
+        Gdx.input.setInputProcessor(new InputEndGame(gameScreen));
         endGameWinner = playerNum;
     }
 

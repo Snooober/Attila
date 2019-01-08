@@ -1,7 +1,7 @@
 package com.nick.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.nick.Attila;
 
-public class MenuScreen implements Screen, InputProcessor {
+public class MenuScreen extends InputAdapter implements Screen {
+    private SpriteBatch batch;
     private OrthographicCamera camera;
     private Attila game;
     private int screenWidth;
@@ -29,8 +30,8 @@ public class MenuScreen implements Screen, InputProcessor {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        game.batch = new SpriteBatch();
-        game.batch.setProjectionMatrix(camera.combined);
+        batch = new SpriteBatch();
+        batch.setProjectionMatrix(camera.combined);
 
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
@@ -52,63 +53,24 @@ public class MenuScreen implements Screen, InputProcessor {
     }
 
     @Override
-    public void show() {
-    }
-
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(.15f, .15f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
 
-        game.batch.begin();
-        startFont.draw(game.batch, startLayout, screenWidth / 2f, screenHeight / 2f);
-        exitFont.draw(game.batch, exitLayout, screenWidth / 2f, (screenHeight / 2f) - startButton.height);
-        game.batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
+        batch.begin();
+        startFont.draw(batch, startLayout, screenWidth / 2f, screenHeight / 2f);
+        exitFont.draw(batch, exitLayout, screenWidth / 2f, (screenHeight / 2f) - startButton.height);
+        batch.end();
     }
 
     @Override
     public void dispose() {
+        batch.dispose();
         startFont.dispose();
         exitFont.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
     }
 
     @Override
@@ -130,22 +92,27 @@ public class MenuScreen implements Screen, InputProcessor {
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+    public void show() {
+
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+    public void resize(int width, int height) {
+
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
+    public void pause() {
+
     }
 
     @Override
-    public boolean scrolled(int amount) {
-        return false;
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
     }
 }

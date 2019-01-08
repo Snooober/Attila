@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nick.screens.MenuScreen;
 
 public class Attila extends Game {
-    public SpriteBatch batch;
 
     @Override
     public void create() {
@@ -15,7 +14,7 @@ public class Attila extends Game {
 
     @Override
     public void dispose() {
-        batch.dispose();
+
     }
 
     @Override

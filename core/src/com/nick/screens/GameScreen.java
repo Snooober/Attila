@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.nick.Attila;
 import com.nick.attilaHelpers.AssetLoader;
@@ -13,18 +14,21 @@ import com.nick.gameObjects.GameBoard;
 public class GameScreen implements Screen {
     public OrthographicCamera camera;
     public GameBoard board;
-    private Attila game;
+    public Attila game;
     private ShapeRenderer shapeRenderer;
+    private SpriteBatch batch;
 
     public GameScreen(final Attila game) {
         Gdx.input.setInputProcessor(new InputHandler(this));
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
+        this.batch = new SpriteBatch();
+        batch.setProjectionMatrix(camera.combined);
         shapeRenderer = new ShapeRenderer();
         AssetLoader.load();
 
-        board = new GameBoard(5, 4);
+        board = new GameBoard(5, 4, this);
     }
 
     @Override
@@ -39,8 +43,8 @@ public class GameScreen implements Screen {
 
         camera.update();
         shapeRenderer.setProjectionMatrix(camera.combined);
-        game.batch.setProjectionMatrix(camera.combined);
-        board.render(delta, game.batch, shapeRenderer);
+        batch.setProjectionMatrix(camera.combined);
+        board.render(delta, batch, shapeRenderer);
     }
 
 
@@ -66,6 +70,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        batch.dispose();
         shapeRenderer.dispose();
         AssetLoader.dispose();
     }
