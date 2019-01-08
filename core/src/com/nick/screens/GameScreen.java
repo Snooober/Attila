@@ -25,7 +25,8 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
         this.batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-        shapeRenderer = new ShapeRenderer();
+        this.shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(camera.combined);
         AssetLoader.load();
 
         board = new GameBoard(5, 4, this);
@@ -41,9 +42,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(.15f, .15f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        batch.setProjectionMatrix(camera.combined);
         board.render(delta, batch, shapeRenderer);
     }
 

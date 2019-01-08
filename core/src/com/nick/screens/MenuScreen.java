@@ -1,54 +1,63 @@
 package com.nick.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.nick.Attila;
 
-public class MenuScreen extends InputAdapter implements Screen {
-    private SpriteBatch batch;
+public class MenuScreen implements Screen {
+    private Stage stage;
+    private BitmapFont font;
     private OrthographicCamera camera;
-    private Attila game;
     private int screenWidth;
     private int screenHeight;
-    private BitmapFont startFont;
-    private BitmapFont exitFont;
-    private Rectangle startButton;
-    private Rectangle exitButton;
-    private GlyphLayout startLayout;
-    private GlyphLayout exitLayout;
 
     public MenuScreen(final Attila game) {
-        this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        batch = new SpriteBatch();
-        batch.setProjectionMatrix(camera.combined);
 
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
 
-        startLayout = new GlyphLayout();
-        exitLayout = new GlyphLayout();
-        startButton = new Rectangle();
-        exitButton = new Rectangle();
-        startFont = new BitmapFont();
-        exitFont = new BitmapFont();
+        this.stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
 
-        startLayout.setText(startFont, "Start");
-        exitLayout.setText(exitFont, "Exit");
+        this.font = new BitmapFont();
+        font.getData().setScale(4);
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
 
-        startButton.set(screenWidth / 2f, screenHeight / 2f, startLayout.width, startLayout.height);
-        exitButton.set(startButton.getX(), (screenHeight / 2f) + startButton.height, exitLayout.width, exitLayout.height);
+        TextButton startButton = new TextButton("Start", textButtonStyle);
+        TextButton exitButton = new TextButton("Exit", textButtonStyle);
+        startButton.setX(screenWidth / 2f, Align.center);
+        startButton.setY(screenHeight / 2f);
+        exitButton.setX(screenWidth / 2f, Align.center);
+        exitButton.setY(startButton.getY() - startButton.getHeight());
 
-        Gdx.input.setInputProcessor(this);
+        stage.addActor(startButton);
+        stage.addActor(exitButton);
+        startButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new GameScreen(game));
+                MenuScreen.this.dispose();
+            }
+        });
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                MenuScreen.this.dispose();
+                Gdx.app.exit();
+                System.exit(0);
+            }
+        });
     }
 
     @Override
@@ -56,38 +65,13 @@ public class MenuScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(.15f, .15f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-
-        batch.begin();
-        startFont.draw(batch, startLayout, screenWidth / 2f, screenHeight / 2f);
-        exitFont.draw(batch, exitLayout, screenWidth / 2f, (screenHeight / 2f) - startButton.height);
-        batch.end();
+        stage.draw();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        startFont.dispose();
-        exitFont.dispose();
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 touchPos = new Vector3(screenX, screenY, 0);
-
-        if (startButton.contains(touchPos.x, touchPos.y)) {
-            game.setScreen(new GameScreen(game));
-            this.dispose();
-            return true;
-        } else if (exitButton.contains(touchPos.x, touchPos.y)) {
-            this.dispose();
-            game.dispose();
-            Gdx.app.exit();
-            System.exit(0);
-            return true;
-        }
-        return false;
+        stage.dispose();
+        font.dispose();
     }
 
     @Override
