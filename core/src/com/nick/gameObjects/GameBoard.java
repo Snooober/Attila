@@ -2,10 +2,12 @@ package com.nick.gameObjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.nick.attilaHelpers.InputEndGame;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class GameBoard {
     private float boardSpaceLength;
     private float[] initCoords;
     private PlayPiece[][] playerPieces;
+    private PlayerNum endGameWinner;
 
     public GameBoard(final int numCols, final int numRows) {
         this.numCols = numCols;
@@ -34,6 +37,7 @@ public class GameBoard {
         float factor = screenWidth / 60f;
         padding = Math.min(screenWidth / factor, screenHeight / factor / 1.778f);
         touchedPiece = null;
+        endGameWinner = null;
         controller = new PlaceActionsController(this);
         init();
     }
@@ -169,6 +173,11 @@ public class GameBoard {
         return controller.onTouchDown(touchPos);
     }
 
+    public void endGame(PlayerNum playerNum) {
+        Gdx.input.setInputProcessor(new InputEndGame());
+        endGameWinner = playerNum;
+    }
+
     public boolean allPlayed() {
         for (int player = 0; player <= 1; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
@@ -192,6 +201,21 @@ public class GameBoard {
     public void render(final float delta, final SpriteBatch batch, final ShapeRenderer shapeRenderer) {
         renderBoard(shapeRenderer);
         renderPlayerPieces(delta, batch);
+
+        if (endGameWinner != null) {
+            BitmapFont endMessage = new BitmapFont();
+            batch.begin();
+
+            String winner;
+            if (endGameWinner.equals(PlayerNum.ONE)) {
+                winner = "RED";
+            } else {
+                winner = "BLACK";
+            }
+
+            endMessage.draw(batch, endGameWinner.toString() + " is the winner!", screenWidth / 2f, screenHeight / 2f);
+            batch.end();
+        }
     }
 
     private void renderBoard(final ShapeRenderer shapeRenderer) {
