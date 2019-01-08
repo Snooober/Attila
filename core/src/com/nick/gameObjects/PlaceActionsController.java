@@ -25,7 +25,7 @@ public class PlaceActionsController extends GameActionsController {
         PlayPiece touchedPiece = board.getTouchedPiece();
         if (touchedPiece != null && touchedPiece.getCircle().contains(touchPos)) {
             if (touchedPiece.setCurrentSpace()) {
-                board.nextTurn();
+                nextTurn();
             }
             board.setTouchedPiece(null);
             return true;

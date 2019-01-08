@@ -92,7 +92,7 @@ public class PlayActionsController extends GameActionsController {
                 if (boardSpace.getRectangle().contains(touchPos) && boardSpace.isExists() && !boardSpace.isOccupied()) {
                     boardSpace.setExists(false);
                     awaitRemove = false;
-                    board.nextTurn();
+                    nextTurn();
                     return true;
                 }
             }

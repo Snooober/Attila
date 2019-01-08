@@ -1,7 +1,6 @@
 package com.nick;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nick.screens.MenuScreen;
 
 public class Attila extends Game {

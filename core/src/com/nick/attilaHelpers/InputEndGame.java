@@ -1,7 +1,5 @@
 package com.nick.attilaHelpers;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.nick.screens.GameScreen;
 import com.nick.screens.MenuScreen;

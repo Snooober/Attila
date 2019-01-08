@@ -18,7 +18,6 @@ public class MenuScreen extends InputAdapter implements Screen {
     private Attila game;
     private int screenWidth;
     private int screenHeight;
-
     private BitmapFont startFont;
     private BitmapFont exitFont;
     private Rectangle startButton;

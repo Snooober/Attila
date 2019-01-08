@@ -65,6 +65,10 @@ public class GameBoard {
         this.currentTurn = currentTurn;
     }
 
+    public PlayPiece[][] getPlayerPieces() {
+        return playerPieces;
+    }
+
     private void init() {
         initBoardSpaces();
         initPlayerTurn();
@@ -96,29 +100,14 @@ public class GameBoard {
         }
     }
 
-    //make gameBoardSpaces
-    private void genBoardSpaces() {
-        gameBoardSpaceMap = new HashMap<Integer, BoardSpace>();
-        float[] currentCoords = new float[2];
-        currentCoords[0] = initCoords[0];
-        currentCoords[1] = initCoords[1];
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
-                Integer[] boardCoord = new Integer[2];
-                boardCoord[0] = j;
-                boardCoord[1] = i;
-                BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
-                gameBoardSpaceMap.put(Arrays.hashCode(boardCoord), boardSpace);
+    //determine width, height of GameBoardSpace --> boardSpaceLength
+    private void genBoardSpaceLength() {
+        float extraHeightMargin = screenHeight / 5f;
+        float extraWidthMargin = screenWidth / 10f;
 
-                currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
-            }
-
-            //reset x-coord
-            //increment y-coord
-            currentCoords[0] = initCoords[0];
-            currentCoords[1] = currentCoords[1] + padding + boardSpaceLength;
-        }
+        float availableHeight = screenHeight - (padding * numRows + padding) - extraHeightMargin * 2;
+        float availableWidth = screenWidth - (padding * numCols + padding) - extraWidthMargin * 2;
+        boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
     }
 
     //find initial coordinate for first GameBoardSpace
@@ -144,14 +133,29 @@ public class GameBoard {
         }
     }
 
-    //determine width, height of GameBoardSpace --> boardSpaceLength
-    private void genBoardSpaceLength() {
-        float extraHeightMargin = screenHeight / 5f;
-        float extraWidthMargin = screenWidth / 10f;
+    //make gameBoardSpaces
+    private void genBoardSpaces() {
+        gameBoardSpaceMap = new HashMap<Integer, BoardSpace>();
+        float[] currentCoords = new float[2];
+        currentCoords[0] = initCoords[0];
+        currentCoords[1] = initCoords[1];
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                Rectangle rect = new Rectangle(currentCoords[0], currentCoords[1], boardSpaceLength, boardSpaceLength);
+                Integer[] boardCoord = new Integer[2];
+                boardCoord[0] = j;
+                boardCoord[1] = i;
+                BoardSpace boardSpace = new GameBoardSpace(boardCoord, rect);
+                gameBoardSpaceMap.put(Arrays.hashCode(boardCoord), boardSpace);
 
-        float availableHeight = screenHeight - (padding * numRows + padding) - extraHeightMargin * 2;
-        float availableWidth = screenWidth - (padding * numCols + padding) - extraWidthMargin * 2;
-        boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
+                currentCoords[0] = currentCoords[0] + boardSpaceLength + padding;
+            }
+
+            //reset x-coord
+            //increment y-coord
+            currentCoords[0] = initCoords[0];
+            currentCoords[1] = currentCoords[1] + padding + boardSpaceLength;
+        }
     }
 
     private void initPlayerTurn() {
@@ -191,10 +195,6 @@ public class GameBoard {
         }
 
         return true;
-    }
-
-    public void nextTurn() {
-        controller.nextTurn();
     }
 
     public void nextPhase() {
@@ -248,9 +248,5 @@ public class GameBoard {
         }
 
         batch.end();
-    }
-
-    public PlayPiece[][] getPlayerPieces() {
-        return playerPieces;
     }
 }
