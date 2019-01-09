@@ -45,6 +45,10 @@ public class GameBoard {
         init();
     }
 
+    public Dimensions getDimensions() {
+        return new Dimensions();
+    }
+
     public Map<Integer, BoardSpace> getGameBoardSpaceMap() {
         return gameBoardSpaceMap;
     }
@@ -108,6 +112,10 @@ public class GameBoard {
         float availableHeight = screenHeight - (padding * numRows + padding) - extraHeightMargin * 2;
         float availableWidth = screenWidth - (padding * numCols + padding) - extraWidthMargin * 2;
         boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
+    }
+
+    public float sideMarginLength() {
+        return (screenWidth/10f)/2;
     }
 
     //find initial coordinate for first GameBoardSpace
@@ -222,7 +230,6 @@ public class GameBoard {
     }
 
     private void renderBoard(final ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.GRAY);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         for (BoardSpace boardSpace : gameBoardSpaceMap.values()) {
@@ -248,5 +255,15 @@ public class GameBoard {
         }
 
         batch.end();
+    }
+
+    public class Dimensions {
+        public final float rightMarginLengthX = (screenWidth/10f)/2;
+        public final float leftMarginLengthX = (screenWidth/10f)/2;
+        private GameBoard board = GameBoard.this;
+
+        public GameBoard getGameBoard() {
+            return board;
+        }
     }
 }
