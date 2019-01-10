@@ -30,6 +30,7 @@ public class GameBoard {
     private PlayPiece[][] playerPieces;
     private PlayerNum endGameWinner;
     private GameScreen gameScreen;
+    private Dimensions dimensions;
 
     public GameBoard(final int numCols, final int numRows, final GameScreen gameScreen) {
         this.numCols = numCols;
@@ -46,7 +47,7 @@ public class GameBoard {
     }
 
     public Dimensions getDimensions() {
-        return new Dimensions();
+        return dimensions;
     }
 
     public Map<Integer, BoardSpace> getGameBoardSpaceMap() {
@@ -76,6 +77,7 @@ public class GameBoard {
     private void init() {
         initBoardSpaces();
         initPlayerTurn();
+        this.dimensions = new Dimensions(this);
     }
 
     private void initBoardSpaces() {
@@ -254,9 +256,29 @@ public class GameBoard {
     }
 
     public class Dimensions {
-        public final float rightMarginLengthX = (screenWidth/10f)/2;
-        public final float leftMarginLengthX = (screenWidth/10f)/2;
-        private GameBoard board = GameBoard.this;
+        public final float rightMarginLengthX;
+        public final float leftMarginLengthX;
+        private GameBoard board;
+
+        private Dimensions(GameBoard board) {
+            this.board = board;
+            rightMarginLengthX = board.screenWidth - board.gameBoardSpaceMap.get(Arrays.hashCode(rightBotCoord())).getRectangle().getX() + board.boardSpaceLength + board.padding;
+            leftMarginLengthX = board.gameBoardSpaceMap.get(Arrays.hashCode(leftBotCoord())).getRectangle().getX() - board.padding;
+        }
+
+        private Integer[] rightBotCoord() {
+            Integer[] coord = new Integer[2];
+            coord[0] = numCols - 1;
+            coord[1] = 1;
+            return coord;
+        }
+
+        private Integer[] leftBotCoord() {
+            Integer[] coord = new Integer[2];
+            coord[0] = 1;
+            coord[1] = 1;
+            return coord;
+        }
 
         public GameBoard getGameBoard() {
             return board;
