@@ -1,9 +1,11 @@
-package com.nick.gameObjects;
+package com.nick.attilaPanels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.nick.gameObjects.GameBoard;
+import com.nick.gameObjects.PlayerNum;
 
 public class TurnIndicator extends AttilaPanel {
     private BitmapFont font;

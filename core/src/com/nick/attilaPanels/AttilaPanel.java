@@ -1,11 +1,12 @@
-package com.nick.gameObjects;
+package com.nick.attilaPanels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.nick.gameObjects.GameBoard;
 
 public abstract class AttilaPanel {
-    GameBoard board;
+    protected GameBoard board;
     private float x;
     private float y;
     private float width;

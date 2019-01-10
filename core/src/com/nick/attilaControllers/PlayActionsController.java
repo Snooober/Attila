@@ -1,7 +1,8 @@
-package com.nick.gameObjects;
+package com.nick.attilaControllers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.nick.gameObjects.*;
 
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class PlayActionsController extends GameActionsController {
     }
 
     @Override
-    boolean onTouchDrag(Vector2 touchPos) {
+    public boolean onTouchDrag(Vector2 touchPos) {
         if (awaitRemove) {
             return false;
         } else {

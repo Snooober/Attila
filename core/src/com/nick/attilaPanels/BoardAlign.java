@@ -1,4 +1,4 @@
-package com.nick.gameObjects;
+package com.nick.attilaPanels;
 
 public enum BoardAlign {
     LEFT,

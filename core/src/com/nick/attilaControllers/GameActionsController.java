@@ -1,17 +1,20 @@
-package com.nick.gameObjects;
+package com.nick.attilaControllers;
 
 import com.badlogic.gdx.math.Vector2;
+import com.nick.gameObjects.BoardSpace;
+import com.nick.gameObjects.GameBoard;
+import com.nick.gameObjects.PlayPiece;
 
 import java.util.Iterator;
 
-abstract class GameActionsController {
+public abstract class GameActionsController {
     GameBoard board;
 
     GameActionsController(GameBoard board) {
         this.board = board;
     }
 
-    boolean onTouchDrag(final Vector2 touchPos) {
+    public boolean onTouchDrag(final Vector2 touchPos) {
         PlayPiece[][] playerPieces = board.getPlayerPieces();
         PlayPiece touchedPiece = board.getTouchedPiece();
 

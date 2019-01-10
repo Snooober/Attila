@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.nick.attilaControllers.GameActionsController;
+import com.nick.attilaControllers.PlaceActionsController;
+import com.nick.attilaControllers.PlayActionsController;
 import com.nick.attilaHelpers.InputEndGame;
 import com.nick.screens.GameScreen;
 

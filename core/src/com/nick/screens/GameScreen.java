@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.nick.Attila;
 import com.nick.attilaHelpers.AssetLoader;
 import com.nick.attilaHelpers.InputHandler;
-import com.nick.gameObjects.AttilaPanel;
-import com.nick.gameObjects.BoardAlign;
+import com.nick.attilaPanels.AttilaPanel;
+import com.nick.attilaPanels.BoardAlign;
+import com.nick.attilaPanels.TurnIndicator;
 import com.nick.gameObjects.GameBoard;
-import com.nick.gameObjects.TurnIndicator;
 
 public class GameScreen implements Screen {
     public OrthographicCamera camera;

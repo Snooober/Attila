@@ -1,6 +1,9 @@
-package com.nick.gameObjects;
+package com.nick.attilaControllers;
 
 import com.badlogic.gdx.math.Vector2;
+import com.nick.gameObjects.GameBoard;
+import com.nick.gameObjects.PlayPiece;
+import com.nick.gameObjects.PlayerNum;
 
 public class PlaceActionsController extends GameActionsController {
 

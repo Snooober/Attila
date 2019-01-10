@@ -84,7 +84,7 @@ public class PlayPiece {
         return drawCircle;
     }
 
-    void dragPiece(final Vector2 touchPos) {
+    public void dragPiece(final Vector2 touchPos) {
         drawCircle.setPosition(touchPos.x, touchPos.y);
     }
 
@@ -104,15 +104,15 @@ public class PlayPiece {
         return false;
     }
 
-    void setNewSpace(BoardSpace newSpace) {
+    public void setNewSpace(BoardSpace newSpace) {
         this.newSpace = newSpace;
     }
 
-    void resetNewSpace() {
+    public void resetNewSpace() {
         this.newSpace = currentSpace;
     }
 
-    Vector2 getCircleCenter() {
+    public Vector2 getCircleCenter() {
         return new Vector2(drawCircle.x, drawCircle.y);
     }
 
