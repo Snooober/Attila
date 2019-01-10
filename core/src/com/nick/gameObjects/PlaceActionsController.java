@@ -10,10 +10,10 @@ public class PlaceActionsController extends GameActionsController {
 
     @Override
     public void nextTurn() {
-        if (board.getCurrentTurn().equals(PlayerNum.ONE)) {
-            board.setCurrentTurn(PlayerNum.TWO);
+        if (board.getCurrentTurn().equals(PlayerNum.RED)) {
+            board.setCurrentTurn(PlayerNum.BLACK);
         } else {
-            board.setCurrentTurn(PlayerNum.ONE);
+            board.setCurrentTurn(PlayerNum.RED);
         }
         if (board.allPlayed()) {
             board.nextPhase();

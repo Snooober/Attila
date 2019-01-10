@@ -48,17 +48,17 @@ public class PlayActionsController extends GameActionsController {
 
     @Override
     public void nextTurn() {
-        if (board.getCurrentTurn().equals(PlayerNum.ONE)) {
-            if (hasPlayable(PlayerNum.TWO)) {
-                board.setCurrentTurn(PlayerNum.TWO);
+        if (board.getCurrentTurn().equals(PlayerNum.RED)) {
+            if (hasPlayable(PlayerNum.BLACK)) {
+                board.setCurrentTurn(PlayerNum.BLACK);
             } else {
-                board.endGame(PlayerNum.ONE);
+                board.endGame(PlayerNum.RED);
             }
         } else {
-            if (hasPlayable(PlayerNum.ONE)) {
-                board.setCurrentTurn(PlayerNum.ONE);
+            if (hasPlayable(PlayerNum.RED)) {
+                board.setCurrentTurn(PlayerNum.RED);
             } else {
-                board.endGame(PlayerNum.TWO);
+                board.endGame(PlayerNum.BLACK);
             }
         }
         allUnplayed();

@@ -1,8 +1,8 @@
 package com.nick.gameObjects;
 
 public enum PlayerNum {
-    ONE(0),
-    TWO(1);
+    RED(0),
+    BLACK(1);
 
     private int playerIndex;
 

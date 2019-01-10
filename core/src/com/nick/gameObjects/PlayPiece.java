@@ -25,7 +25,7 @@ public class PlayPiece {
         this.newSpace = startSpace;
         this.played = false;
         this.moving = false;
-        if (playerNum.equals(PlayerNum.ONE)) {
+        if (playerNum.equals(PlayerNum.RED)) {
             pieceTexture = AssetLoader.redPiece;
         } else {
             pieceTexture = AssetLoader.blackPiece;

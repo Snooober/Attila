@@ -96,9 +96,9 @@ public class GameBoard {
         for (int player = 0; player < playerPieces.length; player++) {
             for (int i = 0; i < playerPieces[player].length; i++) {
                 if (player == 0) {
-                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.ONE, startSpaces[player][i]);
+                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.RED, startSpaces[player][i]);
                 } else {
-                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.TWO, startSpaces[player][i]);
+                    playerPieces[player][i] = new PlayPiece(this, PlayerNum.BLACK, startSpaces[player][i]);
                 }
             }
         }
@@ -112,10 +112,6 @@ public class GameBoard {
         float availableHeight = screenHeight - (padding * numRows + padding) - extraHeightMargin * 2;
         float availableWidth = screenWidth - (padding * numCols + padding) - extraWidthMargin * 2;
         boardSpaceLength = Math.min(availableHeight / numRows, availableWidth / numCols);
-    }
-
-    public float sideMarginLength() {
-        return (screenWidth/10f)/2;
     }
 
     //find initial coordinate for first GameBoardSpace
@@ -169,9 +165,9 @@ public class GameBoard {
     private void initPlayerTurn() {
         boolean rand = new Random().nextBoolean();
         if (rand) {
-            currentTurn = PlayerNum.ONE;
+            currentTurn = PlayerNum.RED;
         } else {
-            currentTurn = PlayerNum.TWO;
+            currentTurn = PlayerNum.BLACK;
         }
     }
 
@@ -218,7 +214,7 @@ public class GameBoard {
             batch.begin();
 
             String winner;
-            if (endGameWinner.equals(PlayerNum.ONE)) {
+            if (endGameWinner.equals(PlayerNum.RED)) {
                 winner = "RED";
             } else {
                 winner = "BLACK";
