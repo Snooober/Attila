@@ -16,6 +16,8 @@ public class DesktopLauncher {
         config.height = height - (height / 50);
         config.vSyncEnabled = false;
         config.forceExit = true;
+        config.foregroundFPS = 300;
+        config.backgroundFPS = 30;
         new LwjglApplication(new Attila(), config);
     }
 }
