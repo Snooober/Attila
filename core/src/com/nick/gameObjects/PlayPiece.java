@@ -48,6 +48,7 @@ public class PlayPiece {
 
     void drawPiece(final float delta, SpriteBatch batch) {
         moveToNewSpace(delta);
+
         batch.draw(pieceTexture, drawCircle.x - drawCircle.radius * 1.5f, drawCircle.y - drawCircle.radius * 1.5f, drawCircle.radius * 3f, drawCircle.radius * 3f);
     }
 

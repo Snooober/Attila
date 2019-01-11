@@ -3,10 +3,12 @@ package com.nick.gameObjects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.nick.attilaControllers.GameActionsController;
 import com.nick.attilaControllers.PlaceActionsController;
 import com.nick.attilaControllers.PlayActionsController;
@@ -35,10 +37,6 @@ public class GameBoard {
     private GameScreen gameScreen;
     private Dimensions dimensions;
 
-    public float getPadding() {
-        return padding;
-    }
-
     public GameBoard(final int numCols, final int numRows, final GameScreen gameScreen) {
         this.numCols = numCols;
         this.numRows = numRows;
@@ -51,6 +49,10 @@ public class GameBoard {
         endGameWinner = null;
         controller = new PlaceActionsController(this);
         init();
+    }
+
+    public float getPadding() {
+        return padding;
     }
 
     public PlayerNum getEndGameWinner() {
@@ -223,23 +225,36 @@ public class GameBoard {
     }
 
     public void render(final float delta, final SpriteBatch batch, final ShapeRenderer shapeRenderer) {
+        if (endGameWinner != null) {
+            batch.setColor(new Color(1, 1, 1, 0.5f));
+        }
+
         renderBoard(shapeRenderer);
         renderPlayerPieces(delta, batch);
-
         if (endGameWinner != null) {
-            BitmapFont endMessage = new BitmapFont();
-            batch.begin();
-
-            String winner;
-            if (endGameWinner.equals(PlayerNum.RED)) {
-                winner = "RED";
-            } else {
-                winner = "BLACK";
-            }
-
-            endMessage.draw(batch, winner + " won!", screenWidth / 2f, screenHeight / 2f);
-            batch.end();
+            renderEndGameText(batch);
         }
+    }
+
+    private void renderEndGameText(SpriteBatch batch) {
+        batch.begin();
+
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(4);
+        GlyphLayout layout = new GlyphLayout();
+        String winner;
+        if (endGameWinner.equals(PlayerNum.RED)) {
+            winner = "RED won!\n" +
+                    "Click anywhere to continue.";
+        } else {
+            winner = "BLACK won!\n" +
+                    "Click anywhere to continue.";
+        }
+        layout.setText(font, winner, Color.WHITE, 0, Align.center, true);
+        font.draw(batch, layout, screenWidth / 2f, screenHeight / 2f + font.getLineHeight());
+
+        batch.end();
+        batch.setColor(new Color(1, 1, 1, 0.5f));
     }
 
     private void renderBoard(final ShapeRenderer shapeRenderer) {
@@ -248,7 +263,11 @@ public class GameBoard {
         for (BoardSpace boardSpace : gameBoardSpaceMap.values()) {
             if (boardSpace.isExists()) {
                 Color color = ((GameBoardSpace) boardSpace).getColor();
-                shapeRenderer.setColor(color);
+                if (endGameWinner == null) {
+                    shapeRenderer.setColor(color);
+                } else {
+                    shapeRenderer.setColor(Color.DARK_GRAY);
+                }
 
                 Rectangle rect = boardSpace.getRectangle();
                 shapeRenderer.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());

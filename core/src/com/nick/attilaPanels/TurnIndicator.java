@@ -14,6 +14,10 @@ public class TurnIndicator extends TextPanel {
 
     @Override
     public void render(SpriteBatch batch) {
+        if (board.getEndGameWinner() != null) {
+            return;
+        }
+
         currentTurn = board.getCurrentTurn();
         text = currentTurn.toString() + "'s turn";
         super.drawCenter(text, batch);
