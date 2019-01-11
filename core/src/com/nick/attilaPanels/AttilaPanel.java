@@ -1,14 +1,18 @@
 package com.nick.attilaPanels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.nick.gameObjects.GameBoard;
 
 public abstract class AttilaPanel {
     protected GameBoard board;
-    private float x;
-    private float y;
+    private float xMin;
+    private float xMax;
+    private float yMin;
+    private float yMax;
     private float width;
     private float height;
 
@@ -16,28 +20,29 @@ public abstract class AttilaPanel {
         this.board = board;
         GameBoard.Dimensions boardDimen = board.getDimensions();
 
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+
         if (align.equals(BoardAlign.RIGHT)) {
-            x = Gdx.graphics.getWidth() - boardDimen.rightMarginLengthX;
-            width = boardDimen.rightMarginLengthX;
+            xMin = screenWidth - boardDimen.rightMarginLengthX;
+            xMax = screenWidth;
         } else {
-            x = 0;
-            width = boardDimen.leftMarginLengthX;
+            xMin = 0;
+            xMax = boardDimen.leftMarginLengthX;
         }
-        y = 0;
-        height = Gdx.graphics.getHeight();
+        yMin = 0;
+        yMax = screenHeight;
+        width = xMax - xMin;
+        height = yMax - yMin;
     }
 
     public abstract void render(float delta, SpriteBatch batch, ShapeRenderer shapeRenderer);
 
+    protected void drawCenter(BitmapFont font, GlyphLayout layout, SpriteBatch batch) {
+        font.draw(batch, layout, xMax - (xMax - xMin) / 2, yMax - (yMax - yMin) / 2);
+    }
+
     public abstract void dispose();
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
 
     public float getWidth() {
         return width;

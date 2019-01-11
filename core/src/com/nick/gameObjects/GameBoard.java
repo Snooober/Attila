@@ -265,7 +265,7 @@ public class GameBoard {
 
         private Dimensions(GameBoard board) {
             this.board = board;
-            rightMarginLengthX = board.screenWidth - board.gameBoardSpaceMap.get(Arrays.hashCode(rightBotCoord())).getRectangle().getX() + board.boardSpaceLength + board.padding;
+            rightMarginLengthX = board.screenWidth - (board.gameBoardSpaceMap.get(Arrays.hashCode(rightBotCoord())).getRectangle().getX() + board.boardSpaceLength + board.padding);
             leftMarginLengthX = board.gameBoardSpaceMap.get(Arrays.hashCode(leftBotCoord())).getRectangle().getX() - board.padding;
         }
 

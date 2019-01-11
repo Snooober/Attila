@@ -1,32 +1,34 @@
 package com.nick.attilaPanels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 import com.nick.gameObjects.GameBoard;
 import com.nick.gameObjects.PlayerNum;
 
 public class TurnIndicator extends AttilaPanel {
     private BitmapFont font;
+    private GlyphLayout layout;
     private PlayerNum currentTurn;
-    private float screenWidth;
-    private float screenHeight;
 
     public TurnIndicator(GameBoard board, BoardAlign align) {
         super(board, align);
         font = new BitmapFont();
         font.getData().setScale(2);
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+        layout = new GlyphLayout();
     }
 
     @Override
     public void render(float delta, SpriteBatch batch, ShapeRenderer shapeRenderer) {
         batch.begin();
-        currentTurn = board.getCurrentTurn();
 
-        font.draw(batch, currentTurn.toString() + "'s turn", screenWidth - (super.getWidth() / 2f), screenHeight / 2f);
+        currentTurn = board.getCurrentTurn();
+        layout.setText(font, currentTurn.toString() + "'s turn", Color.WHITE,0, Align.center,false);
+        super.drawCenter(font,layout,batch);
 
         batch.end();
     }
