@@ -35,6 +35,10 @@ public class GameBoard {
     private GameScreen gameScreen;
     private Dimensions dimensions;
 
+    public float getPadding() {
+        return padding;
+    }
+
     public GameBoard(final int numCols, final int numRows, final GameScreen gameScreen) {
         this.numCols = numCols;
         this.numRows = numRows;
@@ -47,6 +51,14 @@ public class GameBoard {
         endGameWinner = null;
         controller = new PlaceActionsController(this);
         init();
+    }
+
+    public PlayerNum getEndGameWinner() {
+        return endGameWinner;
+    }
+
+    public GameActionsController getController() {
+        return controller;
     }
 
     public Dimensions getDimensions() {
@@ -225,7 +237,7 @@ public class GameBoard {
                 winner = "BLACK";
             }
 
-            endMessage.draw(batch, winner + " is the winner!", screenWidth / 2f, screenHeight / 2f);
+            endMessage.draw(batch, winner + " won!", screenWidth / 2f, screenHeight / 2f);
             batch.end();
         }
     }
@@ -272,14 +284,14 @@ public class GameBoard {
         private Integer[] rightBotCoord() {
             Integer[] coord = new Integer[2];
             coord[0] = numCols - 1;
-            coord[1] = 1;
+            coord[1] = 0;
             return coord;
         }
 
         private Integer[] leftBotCoord() {
             Integer[] coord = new Integer[2];
-            coord[0] = 1;
-            coord[1] = 1;
+            coord[0] = 0;
+            coord[1] = 0;
             return coord;
         }
 

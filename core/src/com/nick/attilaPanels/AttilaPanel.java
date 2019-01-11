@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.nick.gameObjects.GameBoard;
 
 public abstract class AttilaPanel {
@@ -16,7 +15,7 @@ public abstract class AttilaPanel {
     private float width;
     private float height;
 
-    public AttilaPanel(GameBoard board, BoardAlign align) {
+    AttilaPanel(GameBoard board, BoardAlign align) {
         this.board = board;
         GameBoard.Dimensions boardDimen = board.getDimensions();
 
@@ -27,7 +26,7 @@ public abstract class AttilaPanel {
             xMin = screenWidth - boardDimen.rightMarginLengthX;
             xMax = screenWidth;
         } else {
-            xMin = 0;
+            xMin = 0 + board.getPadding();
             xMax = boardDimen.leftMarginLengthX;
         }
         yMin = 0;
@@ -36,10 +35,14 @@ public abstract class AttilaPanel {
         height = yMax - yMin;
     }
 
-    public abstract void render(float delta, SpriteBatch batch, ShapeRenderer shapeRenderer);
+    public abstract void render(SpriteBatch batch);
 
     protected void drawCenter(BitmapFont font, GlyphLayout layout, SpriteBatch batch) {
-        font.draw(batch, layout, xMax - (xMax - xMin) / 2, yMax - (yMax - yMin) / 2);
+        batch.begin();
+
+        font.draw(batch, layout, xMin, yMax - (yMax - yMin) / 2);
+
+        batch.end();
     }
 
     public abstract void dispose();

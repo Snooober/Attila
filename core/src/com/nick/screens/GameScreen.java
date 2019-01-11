@@ -11,6 +11,7 @@ import com.nick.attilaHelpers.AssetLoader;
 import com.nick.attilaHelpers.InputHandler;
 import com.nick.attilaPanels.AttilaPanel;
 import com.nick.attilaPanels.BoardAlign;
+import com.nick.attilaPanels.Instructions;
 import com.nick.attilaPanels.TurnIndicator;
 import com.nick.gameObjects.GameBoard;
 
@@ -19,6 +20,7 @@ public class GameScreen implements Screen {
     public GameBoard board;
     public Attila game;
     private AttilaPanel turnIndicator;
+    private AttilaPanel instructions;
     private ShapeRenderer shapeRenderer;
     private SpriteBatch batch;
     private float screenWidth;
@@ -39,6 +41,7 @@ public class GameScreen implements Screen {
 
         board = new GameBoard(5, 4, this);
         turnIndicator = new TurnIndicator(board, BoardAlign.RIGHT);
+        instructions = new Instructions(board, BoardAlign.LEFT);
     }
 
     @Override
@@ -52,7 +55,8 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         board.render(delta, batch, shapeRenderer);
-        turnIndicator.render(delta, batch, shapeRenderer);
+        turnIndicator.render(batch);
+        instructions.render(batch);
     }
 
 

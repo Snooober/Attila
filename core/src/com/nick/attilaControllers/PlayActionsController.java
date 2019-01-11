@@ -15,6 +15,10 @@ public class PlayActionsController extends GameActionsController {
         allUnplayed();
     }
 
+    public boolean isAwaitRemove() {
+        return awaitRemove;
+    }
+
     private void allUnplayed() {
         PlayPiece[][] playerPieces = board.getPlayerPieces();
         for (PlayPiece[] pieces :
